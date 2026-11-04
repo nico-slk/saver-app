@@ -1,0 +1,71 @@
+# Infraestructura local para desarrollo. El backend se ejecuta con Maven o IntelliJ.
+# Funciona sin internet una vez descargadas las imágenes (docker compose pull).
+#
+# Puertos en el host (solo 127.0.0.1):
+#   PostgreSQL → DB_PORT del .env (5433 por defecto: el 5432 suele estar ocupado por un Postgres instalado)
+#   SeaweedFS  → 8333 (API S3; debe coincidir con STORAGE_ENDPOINT)
+#   Mailpit    → 8025 (bandeja web + API que usa el backend) y 1025 (SMTP)
+# Dentro de la red de Docker, Postgres sigue escuchando en 5432.
+name: saver
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-saver}
+      POSTGRES_USER: ${DB_USER:-saver}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-saver}
+      TZ: America/Argentina/Buenos_Aires
+    ports:
+      - "127.0.0.1:${DB_PORT:-5433}:5432"   # host:contenedor
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U ${DB_USER:-saver} -d ${DB_NAME:-saver}
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  # Almacenamiento de comprobantes con API S3 (reemplaza a MinIO).
+  object-storage:
+    image: chrislusf/seaweedfs
+    restart: unless-stopped
+    environment:
+      AWS_ACCESS_KEY_ID: ${STORAGE_ACCESS_KEY:-saver-dev}
+      AWS_SECRET_ACCESS_KEY: ${STORAGE_SECRET_KEY:-saver-dev-secret}
+      S3_BUCKET: ${STORAGE_BUCKET:-saver-dev-media}
+    command: mini -dir=/data
+    ports:
+      - "127.0.0.1:8333:8333"   # API S3 que usa el backend (STORAGE_ENDPOINT)
+    volumes:
+      - objectdata:/data
+    healthcheck:
+      test:
+        - CMD
+        - wget
+        - -q
+        - --spider
+        - http://localhost:9333/healthz
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 30s
+
+  # Bandeja de emails de desarrollo: captura todo lo que envía el backend (no sale a internet).
+  # Ver los emails en http://localhost:8025
+  mailpit:
+    image: axllent/mailpit
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8025:8025"   # web + API (MAIL_MAILPIT_URL)
+      - "127.0.0.1:1025:1025"   # SMTP
+
+volumes:
+  pgdata:
+    name: saver_pgdata
+  objectdata:
+    name: saver_objectdata

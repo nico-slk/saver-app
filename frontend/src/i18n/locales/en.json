@@ -1,0 +1,516 @@
+{
+  "app": {
+    "name": "Saver",
+    "tagline": "Your expenses, savings and investments in one place"
+  },
+  "nav": {
+    "dashboard": "Home",
+    "expenses": "Expenses",
+    "incomes": "Income",
+    "history": "History",
+    "projections": "Projections",
+    "investments": "Investments",
+    "reports": "Reports",
+    "settings": "Settings",
+    "logout": "Log out",
+    "soon": "Soon",
+    "comingSoon": "Coming soon"
+  },
+  "auth": {
+    "loginTitle": "Sign in",
+    "registerTitle": "Create your account",
+    "email": "Email",
+    "password": "Password",
+    "displayName": "Name",
+    "login": "Sign in",
+    "register": "Sign up",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "goRegister": "Sign up",
+    "goLogin": "Sign in",
+    "or": "or",
+    "passwordHint": "At least 8 characters",
+    "forgotLink": "Forgot your password?",
+    "forgotTitle": "Recover password",
+    "forgotIntro": "Enter your account email and we'll send you a link to choose a new password.",
+    "forgotSubmit": "Send link",
+    "forgotSent": "If an account exists for {{email}}, we've sent an email with the link.",
+    "forgotSentHint": "Check your spam folder too. The link expires in 30 minutes.",
+    "backToLogin": "Back to sign in",
+    "resetTitle": "Choose a new password",
+    "newPassword": "New password",
+    "confirmPassword": "Repeat the password",
+    "passwordMismatch": "Passwords don't match",
+    "resetSubmit": "Save password",
+    "resetDone": "Done! Your password changed. For security, we signed you out of other devices.",
+    "requestNewLink": "Request a new link"
+  },
+  "dashboard": {
+    "greeting": "Hi, {{name}}",
+    "empty": "Add your income and expenses to see this month's balance.",
+    "addIncome": "Add income",
+    "addExpense": "Add expense",
+    "upcoming": "Upcoming due dates",
+    "seeAll": "See all",
+    "noUpcoming": "Nothing pending this month.",
+    "byCategory": "This month's expenses by category",
+    "noExpenses": "No expenses this month."
+  },
+  "settings": {
+    "title": "Settings",
+    "profile": "Profile",
+    "language": "Language",
+    "currency": "Main currency",
+    "timezone": "Time zone",
+    "theme": "Theme",
+    "themes": {
+      "system": "System",
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "save": "Save",
+    "saved": "Changes saved"
+  },
+  "languages": {
+    "es": "Español",
+    "en": "English"
+  },
+  "common": {
+    "loading": "Loading…",
+    "retry": "Retry",
+    "notFound": "Page not found",
+    "backHome": "Back to home",
+    "close": "Close",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete"
+  },
+  "errors": {
+    "auth": {
+      "invalid_credentials": "Wrong email or password",
+      "email_taken": "An account with that email already exists",
+      "password_length": "Password must be 8 to 72 characters long",
+      "google_disabled": "Google sign-in is not enabled",
+      "google_invalid_token": "We couldn't validate your Google account",
+      "google_email_not_verified": "Your Google email is not verified",
+      "unauthorized": "Your session expired, please sign in again",
+      "forbidden": "You don't have permission for this action",
+      "refresh_missing": "Your session expired, please sign in again",
+      "refresh_invalid": "Your session expired, please sign in again",
+      "refresh_expired": "Your session expired, please sign in again",
+      "user_not_found": "User not found",
+      "reset_invalid": "The link is invalid or was already used",
+      "reset_expired": "The link has expired"
+    },
+    "validation": {
+      "failed": "Please check the data you entered",
+      "required": "Required field",
+      "email": "Invalid email",
+      "too_long": "Text is too long",
+      "currency": "Invalid currency",
+      "positive": "Must be greater than 0",
+      "amount": "Invalid amount (max 2 decimals)",
+      "min": "Value too low",
+      "max": "Value too high"
+    },
+    "user": {
+      "timezone": {
+        "invalid": "Invalid time zone"
+      }
+    },
+    "request": {
+      "malformed": "Invalid request"
+    },
+    "server": {
+      "error": "An unexpected error occurred"
+    },
+    "network": "Couldn't reach the server",
+    "unknown": "An unexpected error occurred",
+    "category": {
+      "not_found": "Category not found",
+      "name_taken": "You already have a category with that name",
+      "system_readonly": "System categories can't be changed",
+      "deleted": "That category was deleted; pick another",
+      "color_invalid": "Invalid color"
+    },
+    "income": {
+      "not_found": "Income not found",
+      "end_before_start": "End can't be before start",
+      "amount_before_start": "Amount can't apply before start",
+      "adjust_only_recurring": "Increases only apply to repeating income"
+    },
+    "expense": {
+      "not_found": "Expense not found",
+      "installments_required": "Enter the number of installments",
+      "adjust_only_recurring": "Increases only apply to monthly fixed expenses",
+      "end_only_recurring": "Only monthly fixed expenses can be ended",
+      "end_before_start": "End can't be before start",
+      "amount_before_start": "Amount can't apply before start",
+      "has_payments": "It has recorded payments: use “End” instead of deleting"
+    },
+    "occurrence": {
+      "not_found": "Monthly expense not found"
+    },
+    "month": {
+      "invalid": "Invalid month"
+    },
+    "history": {
+      "invalid_range": "Invalid period",
+      "range_too_long": "The period can't exceed 120 months"
+    },
+    "projection": {
+      "invalid_months": "The horizon must be 1 to 120 months",
+      "invalid_inflation": "Inflation must be between 0 and 50%"
+    },
+    "inflation": {
+      "invalid_currency": "Unsupported currency"
+    },
+    "timeline": {
+      "invalid_months": "Choose between 1 and 120 months",
+      "invalid_from": "The start month is too far away"
+    }
+  },
+  "categories": {
+    "system": {
+      "rent": "Rent",
+      "utilities": "Utilities",
+      "installments": "Installments",
+      "other": "Other"
+    },
+    "color": "Color",
+    "name": "Name",
+    "new": "New category",
+    "placeholder": "E.g.: Food",
+    "create": "Create category",
+    "systemBadge": "System",
+    "deleteHint": "A deleted category is no longer offered for new expenses, but history keeps it.",
+    "deleteTitle": "Delete category",
+    "deleteMessage": "Delete “{{name}}”? Expenses that already use it will keep showing it."
+  },
+  "finance": {
+    "effectiveFrom": "Effective from",
+    "newAmount": "New amount",
+    "changePct": "{{pct}}% vs. current amount",
+    "lastMonth": "Last month",
+    "prevMonth": "Previous month",
+    "nextMonth": "Next month",
+    "today": "Today",
+    "currency": "Currency"
+  },
+  "month": {
+    "income": "Income",
+    "expenses": "Expenses",
+    "balance": "Balance",
+    "overdue": "Overdue",
+    "projectedHint": "Estimated",
+    "pendingOf": "Pending: {{amount}}",
+    "balanceHint": "Month income − expenses",
+    "overdueHint": "Unpaid from previous months",
+    "projected": "Projected month (estimate)"
+  },
+  "expenses": {
+    "new": "New expense",
+    "newTitle": "New expense",
+    "editTitle": "Edit expense",
+    "tabs": {
+      "month": "This month",
+      "templates": "Fixed & installments",
+      "categories": "Categories"
+    },
+    "status": {
+      "PENDING": "Pending",
+      "PARTIAL": "Partially paid",
+      "PAID": "Paid",
+      "OVERDUE": "Overdue",
+      "PROJECTED": "Expected"
+    },
+    "due": {
+      "today": "due today",
+      "inDays_one": "due tomorrow",
+      "inDays_other": "due in {{count}} days",
+      "agoDays_one": "due yesterday",
+      "agoDays_other": "{{count}} days overdue"
+    },
+    "installmentOf": "Installment {{n}}/{{total}}",
+    "variable": "Variable amount",
+    "pay": "Pay",
+    "payComingSoon": "Recording payments with receipts arrives in the next stage",
+    "editOccurrence": "Edit “{{name}}” for this month",
+    "editOccurrenceHint": "Changes this month only (e.g. the actual bill amount or a different due date).",
+    "fields": {
+      "amount": "Amount",
+      "dueDate": "Due date",
+      "notes": "Notes",
+      "kind": "Expense type",
+      "description": "Description",
+      "category": "Category",
+      "amountPerInstallment": "Amount per installment",
+      "estimatedAmount": "Estimated amount",
+      "firstInstallment": "First installment",
+      "month": "Month",
+      "since": "From",
+      "installments": "Number of installments",
+      "dueDay": "Due day"
+    },
+    "kind": {
+      "ONE_TIME": "One-off",
+      "INSTALLMENTS": "Installments",
+      "RECURRING": "Monthly fixed"
+    },
+    "kindHint": {
+      "ONE_TIME": "A single month",
+      "INSTALLMENTS": "N monthly payments",
+      "RECURRING": "Rent, utilities…"
+    },
+    "totalHint": "Total: {{total}}",
+    "dueLastDay": "Last day of the month",
+    "dueOnDay": "A specific day",
+    "variableLabel": "The amount changes every month",
+    "variableHint": "E.g. electricity or gas. Enter an estimate and adjust the real amount each month.",
+    "adjustLabel": "Has periodic increases",
+    "adjustHint": "E.g. rent goes up every 4 months. Used to estimate future months.",
+    "overdueTitle_one": "{{count}} overdue expense",
+    "overdueTitle_other": "{{count}} overdue expenses",
+    "monthList": "Expenses this month",
+    "emptyMonth": "No expenses for this month.",
+    "emptyTemplates": "You haven't added any expenses yet.",
+    "dueEvery": "Due on day {{day}}",
+    "installmentsSummary": "{{remaining}} of {{total}} installments left (until {{end}})",
+    "until": "Until {{month}}",
+    "indefinite": "No end date",
+    "nextAdjustment": "Next increase: {{month}} (+{{pct}}%)",
+    "total": "Total {{amount}}",
+    "changeAmount": "Record increase",
+    "end": "End",
+    "activeTemplates": "Active expenses",
+    "finishedTemplates": "Finished",
+    "changeAmountTitle": "New amount for “{{name}}”",
+    "changeAmountHint": "Applies from the chosen month and is kept in history. Previous months don't change.",
+    "endTitle": "End “{{name}}”",
+    "endHint": "The expense stops appearing after the chosen month.",
+    "deleteTitle": "Delete expense",
+    "deleteMessage": "Delete “{{name}}” and all its months or installments? To keep history, use “End”.",
+    "nextAdjustmentInflation": "Next increase: {{month}} (with inflation)"
+  },
+  "incomes": {
+    "new": "New income",
+    "newTitle": "New income",
+    "intro": "Fixed income (salary) and repeating extras are used to project the following months. One-month extras are not.",
+    "empty": "You haven't added any income yet.",
+    "groups": {
+      "fixed": "Fixed income",
+      "recurring": "Repeating extras",
+      "oneOff": "One-month extras",
+      "finished": "Finished"
+    },
+    "kind": {
+      "FIXED": "Fixed",
+      "EXTRA": "Extra"
+    },
+    "kindHint": {
+      "FIXED": "Salary, every month",
+      "EXTRA": "Unexpected, collection, loan"
+    },
+    "onlyIn": "Only in {{month}}",
+    "since": "Every month since {{month}}",
+    "range": "From {{from}} to {{to}}",
+    "changeAmount": "Record raise",
+    "end": "End",
+    "changeAmountTitle": "New amount for “{{name}}”",
+    "changeAmountHint": "E.g. a salary raise. Applies from the chosen month; earlier months don't change.",
+    "endTitle": "End “{{name}}”",
+    "endHint": "The income stops counting after the chosen month.",
+    "deleteTitle": "Delete income",
+    "deleteMessage": "Delete “{{name}}”? It also disappears from previous months.",
+    "fields": {
+      "description": "Description",
+      "amount": "Amount",
+      "since": "From",
+      "month": "Month",
+      "repeat": "Repetition",
+      "months": "Number of months"
+    },
+    "placeholderFixed": "E.g.: Salary",
+    "placeholderExtra": "E.g.: Freelance job",
+    "repeat": {
+      "once": "This month only",
+      "months": "Same amount for N months",
+      "indefinite": "Every month, no end date"
+    },
+    "repeatHint": "If each month's amount is different, enter each payment as “This month only”.",
+    "increases": "Increases",
+    "increasesTitle": "{{name}} increases",
+    "adjustLabel": "Has periodic increases",
+    "adjustHint": "E.g. the salary increases every 3 months with inflation. Used to estimate future months."
+  },
+  "history": {
+    "range": "Period",
+    "lastMonths_one": "Last month",
+    "lastMonths_other": "Last {{count}} months",
+    "from": "From",
+    "to": "To",
+    "filterByCategory": "Filter expenses by category",
+    "allCategories": "All",
+    "savingsOf": "Savings in {{month}}",
+    "vsPrevious": "vs. previous month:",
+    "averageSavings": "Average savings",
+    "perMonth_one": "in {{count}} month",
+    "perMonth_other": "per month, over {{count}} months",
+    "totalSavings": "Savings in the period",
+    "expensesChange": "Change in expenses",
+    "filteredExpensesChange": "Change (filtered)",
+    "firstToLast": "First to last month ({{pct}}%)",
+    "firstToLastNoPct": "First to last month",
+    "empty": "No data in this period. History is built from the income and expenses you entered.",
+    "incomeVsExpenses": "Income and expenses per month",
+    "filterApplied": "Expenses filtered by category",
+    "savingsByMonth": "Savings per month",
+    "savingsHint": "Income − all expenses of the month",
+    "savings": "Savings",
+    "byCategoryPeriod": "Period expenses by category",
+    "tableTitle": "Show monthly table",
+    "month": "Month",
+    "compareTitle": "Compare months",
+    "compareHint": "What changed between the chosen month and {{to}}",
+    "compareFrom": "Compare from",
+    "averageSince_one": "Average savings since {{from}}: {{amount}} ({{count}} month).",
+    "averageSince_other": "Average savings since {{from}}: {{amount}} per month ({{count}} months).",
+    "noExpensesToCompare": "No expenses to compare in those months.",
+    "expense": "Expense",
+    "change": "Change",
+    "status": {
+      "UP": "Up",
+      "DOWN": "Down",
+      "SAME": "Same",
+      "NEW": "New",
+      "ENDED": "Ended"
+    },
+    "realToggle": "Adjust for inflation (in {{month}} money)",
+    "realToggleHint": "Each month's amounts are brought to the last month of the period so they can be compared fairly.",
+    "realApplied": "Values adjusted for inflation to {{month}}.",
+    "periodInflation": "{{currency}} inflation between {{from}} and {{to}}: {{pct}}",
+    "includesEstimate": "(includes estimated months)",
+    "expensesReal": "expenses after inflation: {{pct}}",
+    "totalSavingsReal": "total savings in {{month}} money: {{amount}}",
+    "compareInflation": "Inflation between {{from}} and {{to}}: {{pct}}",
+    "expensesAboveInflation": "Your expenses rose {{pct}} more than inflation.",
+    "expensesBelowInflation": "Your expenses rose {{pct}} less than inflation.",
+    "expensesLikeInflation": "Your expenses rose in line with inflation.",
+    "savingsRealCompare": "Savings in {{from}} are worth {{amount}} in {{to}} money:",
+    "vsInflation": "Vs. inflation",
+    "likeInflation": "= inflation",
+    "aboveInflation": "{{pct}} above",
+    "belowInflation": "{{pct}} below"
+  },
+  "projections": {
+    "intro": "How much you'll have in the coming months keeping your current income and expenses, with installments ending and estimated increases.",
+    "horizon": "Horizon",
+    "monthsOption_one": "{{count}} month",
+    "monthsOption_other": "{{count}} months",
+    "startBalance": "Money available today",
+    "startBalanceHint": "Optional: added to the projected savings",
+    "inflation": "Monthly inflation to simulate (%)",
+    "inflationHint": "Empty = the currency's inflation. A value only changes this simulation.",
+    "saveInflation": "Save as {{currency}} inflation",
+    "excludedCurrencies": "You have activity in {{list}} that isn't included: the projection is in {{currency}} only.",
+    "negativeMonths_one": "{{count}} month has more expenses than income.",
+    "negativeMonths_other": "{{count}} months have more expenses than income.",
+    "finalBalance_one": "In {{count}} month you'd have",
+    "finalBalance_other": "In {{count}} months you'd have",
+    "finalBalanceReal": "In today's money",
+    "realHint": "Discounting {{pct}} accumulated inflation",
+    "noInflation": "No inflation set for this currency",
+    "installmentsEnd": "Installments end",
+    "noInstallments": "No installments",
+    "savingsAfter": "Afterwards: {{amount}} per month",
+    "endsBeyond": "After the chosen horizon",
+    "averageSavings": "Average monthly savings",
+    "perMonth": "Over the projected period",
+    "cumulativeTitle": "Accumulated balance",
+    "cumulativeHint": "Money available today + each month's savings",
+    "nominal": "Nominal",
+    "real": "In today's money",
+    "monthlyTitle": "Expected income and expenses",
+    "monthlyHint": "Includes estimated increases and the average of variable expenses",
+    "tableTitle": "Monthly detail",
+    "installments": "Installments",
+    "fixed": "Fixed & other",
+    "cumulative": "Accumulated",
+    "events": "Events",
+    "event": {
+      "INSTALLMENTS_END": "Last installment: {{name}}",
+      "INCREASE": "{{name}} goes up ({{amount}})",
+      "INCOME_ENDS": "Income ends: {{name}}",
+      "INCOME_INCREASE": "{{name}} increases ({{amount}})"
+    },
+    "useDefaultInflation": "Use the currency's",
+    "inflationColumn": "Inflation",
+    "estimatedShort": "(est.)",
+    "inflationUsed": "Inflation used for {{currency}}: {{rate}} per month,",
+    "inflationSource": {
+      "SCREEN": "chosen for this simulation",
+      "MANUAL": "your manual inflation",
+      "ESTIMATED": "average of the latest official months",
+      "NONE": "no official or manual data (0%)"
+    },
+    "inflationLast": "latest official data: {{month}}"
+  },
+  "adjustment": {
+    "how": "How it increases",
+    "byInflation": "With inflation",
+    "byPercent": "A fixed percentage",
+    "every": "Every how many months",
+    "percent": "Estimated increase (%)",
+    "inflationHint_one": "Increases by the previous month's inflation per {{source}}. Months without data use the estimated inflation.",
+    "inflationHint_other": "Increases by the inflation of the previous {{count}} months per {{source}}. Months without data use the estimated inflation.",
+    "summaryInflation_one": "Increases every month with inflation",
+    "summaryInflation_other": "Increases every {{count}} months with inflation",
+    "summaryPercent_one": "Increases {{pct}}% every month",
+    "summaryPercent_other": "Increases {{pct}}% every {{count}} months",
+    "next": "next: {{month}}"
+  },
+  "inflation": {
+    "title": "Inflation",
+    "intro": "Downloaded once a day from official sources and used in projections, in expenses and income that increase with inflation, and to see history in real terms. Months without official data use your manual inflation or, if you did not set one, the average of the latest months.",
+    "currency": {
+      "ARS": "Pesos (ARS)",
+      "USD": "Dollars (USD)"
+    },
+    "source": {
+      "ARS": "INDEC (Argentina CPI)",
+      "USD": "US CPI (BLS)"
+    },
+    "lastOfficial": "Latest data ({{month}})",
+    "last12": "Last 12 months",
+    "noData": "No official data yet. It downloads automatically when the server has internet access; meanwhile you can enter a manual inflation rate.",
+    "usedForProjections": "Months without official data use",
+    "projected": {
+      "MANUAL": "set by you",
+      "ESTIMATED_one": "latest official month",
+      "ESTIMATED_other": "average of the last {{count}} official months",
+      "NONE": "0% (no official or manual data)"
+    },
+    "manual": "Manual inflation (% per month)",
+    "manualHint": "Optional. Replaces the estimate only for months that do not have official data yet.",
+    "useEstimate": "Use the estimate",
+    "clearManual": "Remove",
+    "recentChart": "Monthly inflation of the latest months",
+    "monthly": "Monthly inflation"
+  },
+  "timeline": {
+    "title": "Income and expenses: past and projection",
+    "hint": "Earlier months are actual; from the current month on, projected (lighter).",
+    "from": "From",
+    "months": "Months",
+    "reset": "Reset",
+    "range": "{{from}} – {{to}}",
+    "projected": "Projected",
+    "today": "Today · {{date}}",
+    "type": {
+      "PAST": "actual",
+      "CURRENT": "current month",
+      "FUTURE": "projected"
+    }
+  }
+}

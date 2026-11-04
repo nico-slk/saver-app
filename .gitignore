@@ -1,0 +1,31 @@
+# ── Saver: un solo repositorio (backend + frontend + docs) ──
+
+# Secretos y configuración local (nunca se versionan)
+.env
+.env.*
+!.env.example
+
+# Backend (Java / Maven)
+backend/target/
+*.class
+*.log
+hs_err_pid*
+
+# Frontend (Node / Vite)
+frontend/node_modules/
+frontend/dist/
+frontend/coverage/
+*.tsbuildinfo
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Restos de transferencias locales (no forman parte del proyecto)
+_to_delete/

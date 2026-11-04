@@ -1,0 +1,516 @@
+{
+  "app": {
+    "name": "Saver",
+    "tagline": "Tus gastos, ahorros e inversiones en un solo lugar"
+  },
+  "nav": {
+    "dashboard": "Inicio",
+    "expenses": "Gastos",
+    "incomes": "Ingresos",
+    "history": "Historial",
+    "projections": "Proyecciones",
+    "investments": "Inversiones",
+    "reports": "Informes",
+    "settings": "Ajustes",
+    "logout": "Cerrar sesión",
+    "soon": "Pronto",
+    "comingSoon": "Próximamente"
+  },
+  "auth": {
+    "loginTitle": "Iniciá sesión",
+    "registerTitle": "Creá tu cuenta",
+    "email": "Email",
+    "password": "Contraseña",
+    "displayName": "Nombre",
+    "login": "Ingresar",
+    "register": "Registrarme",
+    "noAccount": "¿No tenés cuenta?",
+    "haveAccount": "¿Ya tenés cuenta?",
+    "goRegister": "Registrate",
+    "goLogin": "Iniciá sesión",
+    "or": "o",
+    "passwordHint": "Mínimo 8 caracteres",
+    "forgotLink": "¿Olvidaste tu contraseña?",
+    "forgotTitle": "Recuperar contraseña",
+    "forgotIntro": "Ingresá el email de tu cuenta y te enviamos un link para elegir una contraseña nueva.",
+    "forgotSubmit": "Enviar link",
+    "forgotSent": "Si existe una cuenta con {{email}}, te enviamos un email con el link.",
+    "forgotSentHint": "Revisá también la carpeta de spam. El link vence en 30 minutos.",
+    "backToLogin": "Volver a iniciar sesión",
+    "resetTitle": "Elegí una nueva contraseña",
+    "newPassword": "Nueva contraseña",
+    "confirmPassword": "Repetí la contraseña",
+    "passwordMismatch": "Las contraseñas no coinciden",
+    "resetSubmit": "Guardar contraseña",
+    "resetDone": "¡Listo! Tu contraseña cambió. Por seguridad cerramos las sesiones abiertas en otros dispositivos.",
+    "requestNewLink": "Pedir un link nuevo"
+  },
+  "dashboard": {
+    "greeting": "Hola, {{name}}",
+    "empty": "Cargá tus ingresos y gastos para ver el balance del mes.",
+    "addIncome": "Agregar ingreso",
+    "addExpense": "Agregar gasto",
+    "upcoming": "Próximos vencimientos",
+    "seeAll": "Ver todos",
+    "noUpcoming": "No hay vencimientos pendientes este mes.",
+    "byCategory": "Gastos del mes por categoría",
+    "noExpenses": "Sin gastos este mes."
+  },
+  "settings": {
+    "title": "Ajustes",
+    "profile": "Perfil",
+    "language": "Idioma",
+    "currency": "Moneda principal",
+    "timezone": "Zona horaria",
+    "theme": "Tema",
+    "themes": {
+      "system": "Sistema",
+      "light": "Claro",
+      "dark": "Oscuro"
+    },
+    "save": "Guardar",
+    "saved": "Cambios guardados"
+  },
+  "languages": {
+    "es": "Español",
+    "en": "English"
+  },
+  "common": {
+    "loading": "Cargando…",
+    "retry": "Reintentar",
+    "notFound": "Página no encontrada",
+    "backHome": "Volver al inicio",
+    "close": "Cerrar",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "edit": "Editar",
+    "delete": "Eliminar"
+  },
+  "errors": {
+    "auth": {
+      "invalid_credentials": "Email o contraseña incorrectos",
+      "email_taken": "Ya existe una cuenta con ese email",
+      "password_length": "La contraseña debe tener entre 8 y 72 caracteres",
+      "google_disabled": "El ingreso con Google no está habilitado",
+      "google_invalid_token": "No pudimos validar tu cuenta de Google",
+      "google_email_not_verified": "Tu email de Google no está verificado",
+      "unauthorized": "Tu sesión expiró, volvé a ingresar",
+      "forbidden": "No tenés permiso para esta acción",
+      "refresh_missing": "Tu sesión expiró, volvé a ingresar",
+      "refresh_invalid": "Tu sesión expiró, volvé a ingresar",
+      "refresh_expired": "Tu sesión expiró, volvé a ingresar",
+      "user_not_found": "Usuario no encontrado",
+      "reset_invalid": "El link no es válido o ya se usó",
+      "reset_expired": "El link venció"
+    },
+    "validation": {
+      "failed": "Revisá los datos ingresados",
+      "required": "Campo obligatorio",
+      "email": "Email inválido",
+      "too_long": "Texto demasiado largo",
+      "currency": "Moneda inválida",
+      "positive": "Debe ser mayor a 0",
+      "amount": "Monto inválido (máximo 2 decimales)",
+      "min": "Valor demasiado bajo",
+      "max": "Valor demasiado alto"
+    },
+    "user": {
+      "timezone": {
+        "invalid": "Zona horaria inválida"
+      }
+    },
+    "request": {
+      "malformed": "Solicitud inválida"
+    },
+    "server": {
+      "error": "Ocurrió un error inesperado"
+    },
+    "network": "No se pudo conectar con el servidor",
+    "unknown": "Ocurrió un error inesperado",
+    "category": {
+      "not_found": "La categoría no existe",
+      "name_taken": "Ya tenés una categoría con ese nombre",
+      "system_readonly": "Las categorías del sistema no se pueden modificar",
+      "deleted": "La categoría fue eliminada; elegí otra",
+      "color_invalid": "Color inválido"
+    },
+    "income": {
+      "not_found": "El ingreso no existe",
+      "end_before_start": "El fin no puede ser anterior al inicio",
+      "amount_before_start": "El monto no puede regir antes del inicio",
+      "adjust_only_recurring": "Los aumentos solo aplican a ingresos que se repiten"
+    },
+    "expense": {
+      "not_found": "El gasto no existe",
+      "installments_required": "Indicá la cantidad de cuotas",
+      "adjust_only_recurring": "Los aumentos solo aplican a gastos fijos mensuales",
+      "end_only_recurring": "Solo los gastos fijos mensuales se dan de baja",
+      "end_before_start": "El fin no puede ser anterior al inicio",
+      "amount_before_start": "El monto no puede regir antes del inicio",
+      "has_payments": "Tiene pagos registrados: usá «Dar de baja» en lugar de eliminar"
+    },
+    "occurrence": {
+      "not_found": "El gasto del mes no existe"
+    },
+    "month": {
+      "invalid": "Mes inválido"
+    },
+    "history": {
+      "invalid_range": "El período no es válido",
+      "range_too_long": "El período no puede superar los 120 meses"
+    },
+    "projection": {
+      "invalid_months": "El horizonte debe ser de 1 a 120 meses",
+      "invalid_inflation": "La inflación debe estar entre 0 y 50 %"
+    },
+    "inflation": {
+      "invalid_currency": "Moneda no soportada"
+    },
+    "timeline": {
+      "invalid_months": "Elegí entre 1 y 120 meses",
+      "invalid_from": "El mes de inicio está demasiado lejos"
+    }
+  },
+  "categories": {
+    "system": {
+      "rent": "Alquiler",
+      "utilities": "Servicios",
+      "installments": "Cuotas",
+      "other": "Otros"
+    },
+    "color": "Color",
+    "name": "Nombre",
+    "new": "Nueva categoría",
+    "placeholder": "Ej.: Comida",
+    "create": "Crear categoría",
+    "systemBadge": "Del sistema",
+    "deleteHint": "Al eliminar una categoría deja de ofrecerse para gastos nuevos, pero el historial la conserva.",
+    "deleteTitle": "Eliminar categoría",
+    "deleteMessage": "¿Eliminar «{{name}}»? Los gastos que ya la usan la seguirán mostrando."
+  },
+  "finance": {
+    "effectiveFrom": "Vigente desde",
+    "newAmount": "Nuevo monto",
+    "changePct": "{{pct}} % respecto del monto actual",
+    "lastMonth": "Último mes",
+    "prevMonth": "Mes anterior",
+    "nextMonth": "Mes siguiente",
+    "today": "Hoy",
+    "currency": "Moneda"
+  },
+  "month": {
+    "income": "Ingresos",
+    "expenses": "Gastos",
+    "balance": "Balance",
+    "overdue": "Vencido",
+    "projectedHint": "Estimado",
+    "pendingOf": "Pendiente: {{amount}}",
+    "balanceHint": "Ingresos − gastos del mes",
+    "overdueHint": "Impagos de meses anteriores",
+    "projected": "Mes proyectado (estimación)"
+  },
+  "expenses": {
+    "new": "Nuevo gasto",
+    "newTitle": "Nuevo gasto",
+    "editTitle": "Editar gasto",
+    "tabs": {
+      "month": "Del mes",
+      "templates": "Fijos y cuotas",
+      "categories": "Categorías"
+    },
+    "status": {
+      "PENDING": "Pendiente",
+      "PARTIAL": "Pago parcial",
+      "PAID": "Pagado",
+      "OVERDUE": "Vencido",
+      "PROJECTED": "Previsto"
+    },
+    "due": {
+      "today": "vence hoy",
+      "inDays_one": "vence mañana",
+      "inDays_other": "vence en {{count}} días",
+      "agoDays_one": "venció ayer",
+      "agoDays_other": "venció hace {{count}} días"
+    },
+    "installmentOf": "Cuota {{n}}/{{total}}",
+    "variable": "Monto variable",
+    "pay": "Pagar",
+    "payComingSoon": "El registro de pagos con comprobantes llega en la próxima etapa",
+    "editOccurrence": "Editar «{{name}}» de este mes",
+    "editOccurrenceHint": "Cambia solo este mes (ej. el monto real de la factura o una fecha de vencimiento distinta).",
+    "fields": {
+      "amount": "Monto",
+      "dueDate": "Vencimiento",
+      "notes": "Observaciones",
+      "kind": "Tipo de gasto",
+      "description": "Descripción",
+      "category": "Categoría",
+      "amountPerInstallment": "Monto de cada cuota",
+      "estimatedAmount": "Monto estimado",
+      "firstInstallment": "Primera cuota",
+      "month": "Mes",
+      "since": "Desde",
+      "installments": "Cantidad de cuotas",
+      "dueDay": "Día de vencimiento"
+    },
+    "kind": {
+      "ONE_TIME": "Único",
+      "INSTALLMENTS": "En cuotas",
+      "RECURRING": "Fijo mensual"
+    },
+    "kindHint": {
+      "ONE_TIME": "Un solo mes",
+      "INSTALLMENTS": "N pagos mensuales",
+      "RECURRING": "Alquiler, servicios…"
+    },
+    "totalHint": "Total: {{total}}",
+    "dueLastDay": "Último día del mes",
+    "dueOnDay": "Un día específico",
+    "variableLabel": "El monto varía cada mes",
+    "variableHint": "Ej.: luz o gas. Cargá un estimado y ajustá el monto real cada mes.",
+    "adjustLabel": "Tiene aumentos periódicos",
+    "adjustHint": "Ej.: el alquiler aumenta cada 4 meses. Se usa para estimar los meses futuros.",
+    "overdueTitle_one": "{{count}} gasto vencido",
+    "overdueTitle_other": "{{count}} gastos vencidos",
+    "monthList": "Gastos del mes",
+    "emptyMonth": "No hay gastos para este mes.",
+    "emptyTemplates": "Todavía no cargaste gastos.",
+    "dueEvery": "Vence el día {{day}}",
+    "installmentsSummary": "Quedan {{remaining}} de {{total}} cuotas (hasta {{end}})",
+    "until": "Hasta {{month}}",
+    "indefinite": "Sin fecha de fin",
+    "nextAdjustment": "Próximo aumento: {{month}} (+{{pct}} %)",
+    "total": "Total {{amount}}",
+    "changeAmount": "Registrar aumento",
+    "end": "Dar de baja",
+    "activeTemplates": "Gastos vigentes",
+    "finishedTemplates": "Finalizados",
+    "changeAmountTitle": "Nuevo monto de «{{name}}»",
+    "changeAmountHint": "Se aplica desde el mes elegido y queda en el historial. Los meses anteriores no cambian.",
+    "endTitle": "Dar de baja «{{name}}»",
+    "endHint": "El gasto deja de aparecer después del mes elegido.",
+    "deleteTitle": "Eliminar gasto",
+    "deleteMessage": "¿Eliminar «{{name}}» y todas sus cuotas o meses? Para conservar el historial usá «Dar de baja».",
+    "nextAdjustmentInflation": "Próximo aumento: {{month}} (según inflación)"
+  },
+  "incomes": {
+    "new": "Nuevo ingreso",
+    "newTitle": "Nuevo ingreso",
+    "intro": "Los ingresos fijos (sueldo) y los extras que se repiten se usan para proyectar los meses siguientes. Los extras de un solo mes no.",
+    "empty": "Todavía no cargaste ingresos.",
+    "groups": {
+      "fixed": "Ingresos fijos",
+      "recurring": "Extras que se repiten",
+      "oneOff": "Extras de un solo mes",
+      "finished": "Finalizados"
+    },
+    "kind": {
+      "FIXED": "Fijo",
+      "EXTRA": "Extra"
+    },
+    "kindHint": {
+      "FIXED": "Sueldo, todos los meses",
+      "EXTRA": "Imprevisto, cobro, préstamo"
+    },
+    "onlyIn": "Solo en {{month}}",
+    "since": "Todos los meses desde {{month}}",
+    "range": "De {{from}} a {{to}}",
+    "changeAmount": "Registrar aumento",
+    "end": "Finalizar",
+    "changeAmountTitle": "Nuevo monto de «{{name}}»",
+    "changeAmountHint": "Ej.: aumento de sueldo. Se aplica desde el mes elegido; los anteriores no cambian.",
+    "endTitle": "Finalizar «{{name}}»",
+    "endHint": "El ingreso deja de contarse después del mes elegido.",
+    "deleteTitle": "Eliminar ingreso",
+    "deleteMessage": "¿Eliminar «{{name}}»? Desaparece también de los meses anteriores.",
+    "fields": {
+      "description": "Descripción",
+      "amount": "Monto",
+      "since": "Desde",
+      "month": "Mes",
+      "repeat": "Repetición",
+      "months": "Cantidad de meses"
+    },
+    "placeholderFixed": "Ej.: Sueldo",
+    "placeholderExtra": "Ej.: Trabajo freelance",
+    "repeat": {
+      "once": "Solo este mes",
+      "months": "Mismo monto durante N meses",
+      "indefinite": "Todos los meses, sin fecha de fin"
+    },
+    "repeatHint": "Si los montos de cada mes son distintos, cargá cada cobro como «Solo este mes».",
+    "increases": "Aumentos",
+    "increasesTitle": "Aumentos de {{name}}",
+    "adjustLabel": "Tiene aumentos periódicos",
+    "adjustHint": "Ej.: el sueldo aumenta cada 3 meses según inflación. Se usa para estimar los meses futuros."
+  },
+  "history": {
+    "range": "Período",
+    "lastMonths_one": "Último mes",
+    "lastMonths_other": "Últimos {{count}} meses",
+    "from": "Desde",
+    "to": "Hasta",
+    "filterByCategory": "Filtrar gastos por categoría",
+    "allCategories": "Todas",
+    "savingsOf": "Ahorro de {{month}}",
+    "vsPrevious": "vs. mes anterior:",
+    "averageSavings": "Ahorro promedio",
+    "perMonth_one": "en {{count}} mes",
+    "perMonth_other": "por mes, en {{count}} meses",
+    "totalSavings": "Ahorro del período",
+    "expensesChange": "Variación de gastos",
+    "filteredExpensesChange": "Variación (filtrado)",
+    "firstToLast": "Del primer al último mes ({{pct}} %)",
+    "firstToLastNoPct": "Del primer al último mes",
+    "empty": "No hay datos en este período. El historial se arma con los ingresos y gastos cargados.",
+    "incomeVsExpenses": "Ingresos y gastos por mes",
+    "filterApplied": "Gastos filtrados por categoría",
+    "savingsByMonth": "Ahorro por mes",
+    "savingsHint": "Ingresos − todos los gastos del mes",
+    "savings": "Ahorro",
+    "byCategoryPeriod": "Gastos del período por categoría",
+    "tableTitle": "Ver tabla por mes",
+    "month": "Mes",
+    "compareTitle": "Comparar meses",
+    "compareHint": "Qué cambió entre el mes elegido y {{to}}",
+    "compareFrom": "Comparar desde",
+    "averageSince_one": "Ahorro promedio desde {{from}}: {{amount}} ({{count}} mes).",
+    "averageSince_other": "Ahorro promedio desde {{from}}: {{amount}} por mes ({{count}} meses).",
+    "noExpensesToCompare": "No hay gastos para comparar en esos meses.",
+    "expense": "Gasto",
+    "change": "Variación",
+    "status": {
+      "UP": "Subió",
+      "DOWN": "Bajó",
+      "SAME": "Igual",
+      "NEW": "Nuevo",
+      "ENDED": "Terminó"
+    },
+    "realToggle": "Ajustar por inflación (en valores de {{month}})",
+    "realToggleHint": "Los montos de cada mes se llevan a moneda del último mes del período para compararlos de verdad.",
+    "realApplied": "Valores ajustados por inflación a {{month}}.",
+    "periodInflation": "Inflación {{currency}} entre {{from}} y {{to}}: {{pct}}",
+    "includesEstimate": "(incluye meses estimados)",
+    "expensesReal": "gastos descontada la inflación: {{pct}}",
+    "totalSavingsReal": "ahorro total en valores de {{month}}: {{amount}}",
+    "compareInflation": "Inflación entre {{from}} y {{to}}: {{pct}}",
+    "expensesAboveInflation": "Tus gastos subieron {{pct}} más que la inflación.",
+    "expensesBelowInflation": "Tus gastos subieron {{pct}} menos que la inflación.",
+    "expensesLikeInflation": "Tus gastos subieron igual que la inflación.",
+    "savingsRealCompare": "El ahorro de {{from}} equivale a {{amount}} en valores de {{to}}:",
+    "vsInflation": "Vs. inflación",
+    "likeInflation": "= inflación",
+    "aboveInflation": "{{pct}} arriba",
+    "belowInflation": "{{pct}} abajo"
+  },
+  "projections": {
+    "intro": "Cuánto vas a tener en los próximos meses manteniendo tus ingresos y gastos actuales, con las cuotas que terminan y los aumentos estimados.",
+    "horizon": "Horizonte",
+    "monthsOption_one": "{{count}} mes",
+    "monthsOption_other": "{{count}} meses",
+    "startBalance": "Dinero disponible hoy",
+    "startBalanceHint": "Opcional: se suma al ahorro proyectado",
+    "inflation": "Inflación mensual para simular (%)",
+    "inflationHint": "Vacío = la inflación de la moneda. Un valor solo cambia esta simulación.",
+    "saveInflation": "Guardar como inflación de {{currency}}",
+    "excludedCurrencies": "Tenés movimientos en {{list}} que no se incluyen: la proyección es solo en {{currency}}.",
+    "negativeMonths_one": "Hay {{count}} mes con más gastos que ingresos.",
+    "negativeMonths_other": "Hay {{count}} meses con más gastos que ingresos.",
+    "finalBalance_one": "En {{count}} mes tendrías",
+    "finalBalance_other": "En {{count}} meses tendrías",
+    "finalBalanceReal": "En valores de hoy",
+    "realHint": "Descontando {{pct}} de inflación acumulada",
+    "noInflation": "Sin inflación cargada para esta moneda",
+    "installmentsEnd": "Terminás de pagar cuotas",
+    "noInstallments": "Sin cuotas",
+    "savingsAfter": "Después: {{amount}} por mes",
+    "endsBeyond": "Después del horizonte elegido",
+    "averageSavings": "Ahorro mensual promedio",
+    "perMonth": "En el período proyectado",
+    "cumulativeTitle": "Saldo acumulado",
+    "cumulativeHint": "Dinero disponible hoy + ahorro de cada mes",
+    "nominal": "Nominal",
+    "real": "En valores de hoy",
+    "monthlyTitle": "Ingresos y gastos previstos",
+    "monthlyHint": "Incluye aumentos estimados y el promedio de los gastos variables",
+    "tableTitle": "Detalle por mes",
+    "installments": "Cuotas",
+    "fixed": "Fijos y otros",
+    "cumulative": "Acumulado",
+    "events": "Novedades",
+    "event": {
+      "INSTALLMENTS_END": "Última cuota: {{name}}",
+      "INCREASE": "Aumenta {{name}} ({{amount}})",
+      "INCOME_ENDS": "Termina ingreso: {{name}}",
+      "INCOME_INCREASE": "Aumenta {{name}} ({{amount}})"
+    },
+    "useDefaultInflation": "Usar la de la moneda",
+    "inflationColumn": "Inflación",
+    "estimatedShort": "(est.)",
+    "inflationUsed": "Inflación usada para {{currency}}: {{rate}} mensual,",
+    "inflationSource": {
+      "SCREEN": "elegida para esta simulación",
+      "MANUAL": "tu inflación manual",
+      "ESTIMATED": "promedio de los últimos meses oficiales",
+      "NONE": "sin datos oficiales ni manual (0 %)"
+    },
+    "inflationLast": "último dato oficial: {{month}}"
+  },
+  "adjustment": {
+    "how": "Cómo aumenta",
+    "byInflation": "Según la inflación",
+    "byPercent": "Un porcentaje fijo",
+    "every": "Cada cuántos meses",
+    "percent": "Aumento estimado (%)",
+    "inflationHint_one": "Aumenta la inflación del mes anterior según {{source}}. Para los meses sin dato se usa la inflación estimada.",
+    "inflationHint_other": "Aumenta la inflación acumulada de los {{count}} meses anteriores según {{source}}. Para los meses sin dato se usa la inflación estimada.",
+    "summaryInflation_one": "Aumenta todos los meses según inflación",
+    "summaryInflation_other": "Aumenta cada {{count}} meses según inflación",
+    "summaryPercent_one": "Aumenta {{pct}} % todos los meses",
+    "summaryPercent_other": "Aumenta {{pct}} % cada {{count}} meses",
+    "next": "próximo: {{month}}"
+  },
+  "inflation": {
+    "title": "Inflación",
+    "intro": "Se descarga una vez por día de fuentes oficiales y se usa en las proyecciones, en los gastos e ingresos que aumentan según inflación y para ver el historial en valores reales. Para los meses sin dato oficial se usa tu inflación manual o, si no cargaste una, el promedio de los últimos meses.",
+    "currency": {
+      "ARS": "Pesos (ARS)",
+      "USD": "Dólares (USD)"
+    },
+    "source": {
+      "ARS": "INDEC (IPC nacional)",
+      "USD": "IPC de EE.UU. (BLS)"
+    },
+    "lastOfficial": "Último dato ({{month}})",
+    "last12": "Últimos 12 meses",
+    "noData": "Todavía no hay datos oficiales. Se descargan solos cuando el servidor tiene internet; mientras tanto podés cargar una inflación manual.",
+    "usedForProjections": "Para los meses sin dato oficial se usa",
+    "projected": {
+      "MANUAL": "cargada por vos",
+      "ESTIMATED_one": "promedio del último mes oficial",
+      "ESTIMATED_other": "promedio de los últimos {{count}} meses oficiales",
+      "NONE": "0 % (sin datos oficiales ni manual)"
+    },
+    "manual": "Inflación manual (% mensual)",
+    "manualHint": "Opcional. Reemplaza la estimación solo para los meses que todavía no tienen dato oficial.",
+    "useEstimate": "Usar la estimada",
+    "clearManual": "Quitar",
+    "recentChart": "Inflación mensual de los últimos meses",
+    "monthly": "Inflación mensual"
+  },
+  "timeline": {
+    "title": "Ingresos y gastos: pasado y proyección",
+    "hint": "Los meses anteriores son reales; desde el mes actual, proyectados (más claros).",
+    "from": "Desde",
+    "months": "Meses",
+    "reset": "Restablecer",
+    "range": "{{from}} – {{to}}",
+    "projected": "Proyectado",
+    "today": "Hoy · {{date}}",
+    "type": {
+      "PAST": "real",
+      "CURRENT": "mes actual",
+      "FUTURE": "proyectado"
+    }
+  }
+}
