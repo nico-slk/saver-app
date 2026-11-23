@@ -19,6 +19,8 @@
     "more": "Más"
   },
   "auth": {
+    "demoWarningTitle": "Aviso: Aplicación de Demostración",
+    "demoWarningText": "Esta app es una demo en etapa experimental desarrollada con recursos y prácticas de bajo presupuesto. Se recomienda NO introducir información real ni financiera. Toda la información de la cuenta corre por cuenta y exclusiva responsabilidad del usuario.",
     "loginTitle": "Iniciá sesión",
     "registerTitle": "Creá tu cuenta",
     "email": "Email",

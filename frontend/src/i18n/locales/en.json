@@ -19,6 +19,8 @@
     "more": "More"
   },
   "auth": {
+    "demoWarningTitle": "Notice: Demonstration Application",
+    "demoWarningText": "This app is an experimental demo developed with low-budget resources and practices. It is strongly recommended NOT to enter real personal or financial data. Any registered account information is the sole responsibility of the user.",
     "loginTitle": "Sign in",
     "registerTitle": "Create your account",
     "email": "Email",
