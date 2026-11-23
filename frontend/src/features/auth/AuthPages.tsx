@@ -23,6 +23,21 @@ export function AuthShell({ title, children }: { title: string; children: ReactN
         <h1 className="text-2xl font-bold">{t('app.name')}</h1>
         <p className="text-sm text-slate-500">{t('app.tagline')}</p>
       </div>
+
+      <div className="mb-4 w-full max-w-sm rounded-xl border border-amber-300 bg-amber-50/90 p-3.5 text-xs text-amber-900 shadow-xs dark:border-amber-800/80 dark:bg-amber-950/40 dark:text-amber-200">
+        <div className="flex items-start gap-2.5">
+          <span className="text-base select-none leading-none" aria-hidden>⚠️</span>
+          <div className="space-y-1">
+            <p className="font-semibold text-amber-950 dark:text-amber-100">
+              {t('auth.demoWarningTitle')}
+            </p>
+            <p className="leading-relaxed text-amber-900/90 dark:text-amber-200/90">
+              {t('auth.demoWarningText')}
+            </p>
+          </div>
+        </div>
+      </div>
+
       <Card className="w-full max-w-sm">
         <h2 className="mb-4 text-lg font-semibold">{title}</h2>
         {children}
