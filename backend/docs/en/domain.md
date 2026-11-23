@@ -5,12 +5,37 @@
 This document describes **what** Saver does. It is the functional reference for both backend and frontend.
 Sections marked ✅ are implemented; those marked 🛠️ are not yet. Partial ones say so.
 
-## Currencies and exchange rate 🛠️
+## Currencies and exchange rate ✅
 
 - Supported currencies: **ARS** and **USD**. Each user picks a main currency.
-- Exchange rate: **official dollar, sell rate**, fetched from a public API (dolarapi.com). If it fails, it is entered manually.
-- Every income or payment in USD stores the rate used. Every month closing stores the rate on the closing day.
+- Rates from [dolarapi.com](https://dolarapi.com) (official, MEP, card, blue, CCL…), stored per day. Downloaded 3 times a day, on startup and on request when older than 3 hours. Without internet the rate is entered manually on each movement.
+- **Which dollar is used for what**:
+
+| Operation | Dollar | Price |
+|---|---|---|
+| USD expense paid from a peso account, **with a card** | Card | Sell |
+| USD expense paid from a peso account, without a card | Official | Sell |
+| Peso expense paid from a dollar account | Official | Buy |
+| USD income received in a peso account | Official | Buy |
+| Transfer between accounts in different currencies (buy/sell dollars) | MEP | Sell when buying, buy when selling |
+| Net worth valuation | MEP | Buy |
+
+- Every payment, income receipt and transfer stores the rate used (type and value); another one can always be entered manually (stored as `MANUAL`).
 - Projections are shown in **nominal** and **real** terms (discounting the currency's inflation, see [Inflation](#inflation-)).
+
+## Accounts ✅
+
+- Types: **bank account**, **cash**, **digital wallet**, **savings** and **investment** (the last two count as savings), in ARS or USD.
+- **Balance** = opening balance at a date + income receipts + incoming transfers − payments − outgoing transfers ± adjustments. Movements before the opening date don't change it (they're already included).
+- **Net worth**: sum of all active accounts in the main currency; dollars valued at MEP buy.
+- **Transfers** between own accounts; if currencies differ it's buying or selling dollars.
+- **Adjust balance**: enter the real balance and the difference is recorded (interest, fees, missing expenses).
+- An account with movements can't be deleted: it's **archived** (hidden for new movements, history kept).
+
+## Cards ✅
+
+- They only **group** expenses: an expense can say which card pays it and "This month" shows them together with the pending total. There is no statement, closing date or statement payment: **each installment is paid separately**.
+- A USD expense with a card is paid at the card dollar rate. Deleting a card archives it.
 
 ## Income ✅
 
@@ -45,11 +70,17 @@ An expense is defined once as a **template** that generates monthly **occurrence
 - **Occurrences**: generated automatically from templates up to the current month (when a month is requested). Future months are computed without being stored. Unpaid occurrences from previous months show up as **overdue** in the current month.
 - **Editing**: type, currency, start month and number of installments are not editable (delete and recreate). The amount changes through “Record increase” to keep history; occurrences without payments are recalculated.
 
-## Payments and receipts 🛠️
+## Payments and receipts ✅
 
-- Occurrence states: **PENDING → PARTIAL → PAID**, or **OVERDUE** if the due date passed before completion.
-- An occurrence accepts **multiple payments** (e.g. credit card minimum payment). Each payment has amount, date, currency, exchange rate, notes and **multiple attachments** (PDF, PNG, JPEG…).
-- The UI lists expenses sorted by due date, showing days left, installment number and a **Pay** button that opens the payment form.
+- Occurrence states: **PENDING → PARTIAL → PAID**, or **OVERDUE** if the due date passed before completion. The state comes from the sum of its payments (overpaying is allowed, e.g. a higher electricity bill).
+- An occurrence accepts **multiple payments**. Each payment has a source account, amount (in the expense currency), what left the account (in its currency), rate, date, notes and **up to 10 receipts** (PDF, PNG, JPEG, WEBP; 10 MB each). The type is validated from the file content; files are downloaded through the API with the session.
+- Deleting a payment returns the money to the account, deletes its receipts and recalculates the state.
+- **Past months**: when creating an expense that starts before the current month, the user must say whether those months are already paid (no default). If yes, **assumed payments** are recorded (no account or receipt, they don't move balances). An expense with only assumed payments can be deleted.
+
+## Income receipts ✅
+
+- "Receive" records that a month's income went into an account (in full or in parts), with date, exchange rate if the account is in another currency, and notes.
+- An income with receipts can't be deleted (balances depend on them): end it or delete the receipts first.
 
 ## Month closing 🛠️
 

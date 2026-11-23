@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Alert, Button, Card, Input, Select } from '@/components/ui';
 import { authApi, type User } from '@/features/auth/authApi';
 import { InflationPanel } from '@/features/inflation/InflationPanel';
+import { NotificationSettings } from '@/features/notifications/NotificationSettings';
 import { SUPPORTED_LANGUAGES } from '@/i18n';
 import { translateError } from '@/lib/errors';
 import { useAuthStore } from '@/stores/authStore';
@@ -69,6 +70,11 @@ export function SettingsPage() {
       </Card>
 
       <InflationPanel />
+
+      <section className="space-y-3" aria-labelledby="notifications-heading">
+        <h2 id="notifications-heading" className="text-xl font-semibold">{t('settings.notifications.sectionTitle')}</h2>
+        <NotificationSettings />
+      </section>
 
       <Card>
         <h2 className="mb-4 font-semibold">{t('settings.theme')}</h2>

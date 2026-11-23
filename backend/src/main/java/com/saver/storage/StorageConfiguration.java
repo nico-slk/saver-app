@@ -24,6 +24,8 @@ import software.amazon.awssdk.services.s3.presigner.S3Presigner;
  *       Cloudflare R2 o GCS en modo interoperable (claves HMAC).</li>
  *   <li>{@code s3}: AWS S3 nativo, credenciales de la identidad del entorno.</li>
  *   <li>{@code gcs}: reservado para un adaptador nativo de Google Cloud Storage.</li>
+ *   <li>{@code filesystem}: carpeta local ({@code STORAGE_ENDPOINT} = ruta, por defecto {@code ./data/storage}).
+ *       Solo desarrollo sin Docker; no se permite en producción.</li>
  * </ul>
  *
  * Para sumar un proveedor nuevo: implementar {@link StorageService} y agregarlo al switch.
@@ -44,6 +46,12 @@ public class StorageConfiguration {
         return switch (provider) {
             case "s3-compatible" -> s3Compatible(config, production);
             case "s3" -> awsS3(config);
+            case "filesystem" -> {
+                if (production) throw new IllegalStateException("provider=filesystem is only for development");
+                String path = config.endpoint() == null || config.endpoint().isBlank() || config.endpoint().startsWith("http")
+                        ? "data/storage" : config.endpoint();
+                yield new FileSystemStorageService(java.nio.file.Path.of(path), config.maxFileSizeBytes());
+            }
             case "gcs" -> throw new IllegalStateException(
                     "Native GCS adapter is not implemented yet; use provider=s3-compatible with GCS HMAC keys "
                             + "or implement StorageService for GCS");

@@ -1,0 +1,42 @@
+name: Deploy Backend to Cloud Run
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/deploy-backend.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Build & Deploy Backend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Build & Submit Image (Cloud Build)
+        working-directory: backend
+        run: |
+          gcloud builds submit --tag "southamerica-east1-docker.pkg.dev/saverapp-b82fd/saver/backend:latest"
+
+      - name: Deploy Revision to Cloud Run
+        run: |
+          gcloud run deploy saver-backend \
+            --image "southamerica-east1-docker.pkg.dev/saverapp-b82fd/saver/backend:latest" \
+            --region southamerica-east1 \
+            --service-account "saver-run@saverapp-b82fd.iam.gserviceaccount.com" \
+            --allow-unauthenticated \
+            --memory 1Gi --cpu 1 --timeout 300 \
+            --set-env-vars "DB_HOST=aws-1-sa-east-1.pooler.supabase.com,DB_PORT=5432,DB_NAME=postgres,DB_USER=postgres.fauabermymnrgqhtbbyh,DB_SSLMODE=require,SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=5,COOKIE_SECURE=true,APP_ALLOWED_ORIGINS=https://saverapp-b82fd.web.app,APP_WEB_URL=https://saverapp-b82fd.web.app,MAIL_PROVIDER=brevo,MAIL_FROM_ADDRESS=nicolas.selicki@gmail.com,MAIL_FROM_NAME=Saver,STORAGE_ENVIRONMENT=production,STORAGE_PROVIDER=s3-compatible,STORAGE_ENDPOINT=https://fauabermymnrgqhtbbyh.storage.supabase.co/storage/v1/s3,STORAGE_BUCKET=saver-receipts,STORAGE_REGION=sa-east-1" \
+            --set-secrets "JWT_SECRET=saver-jwt-secret:latest,DB_PASSWORD=saver-db-password:latest,STORAGE_ACCESS_KEY=saver-storage-key:latest,STORAGE_SECRET_KEY=saver-storage-secret:latest,MAIL_BREVO_API_KEY=saver-brevo-api-key:latest"

@@ -49,6 +49,7 @@ class HistoryProjectionFlowTest extends IntegrationTest {
         m.put("currency", "ARS");
         m.put("amount", amount);
         m.put("startMonth", start.toString());
+        m.put("pastMonthsPaid", false); // como antes: los meses pasados quedan impagos
         return m;
     }
 

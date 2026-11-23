@@ -44,7 +44,7 @@ public class ExpenseController {
     @PostMapping("/api/expenses")
     @ResponseStatus(HttpStatus.CREATED)
     public ExpenseResponse create(@CurrentUser UUID userId, @Valid @RequestBody CreateExpenseRequest req) {
-        return ExpenseService.toResponse(service.create(userId, req), time.currentMonth(userId));
+        return ExpenseService.toResponse(service.create(userId, req, time.currentMonth(userId)), time.currentMonth(userId));
     }
 
     @PatchMapping("/api/expenses/{id}")

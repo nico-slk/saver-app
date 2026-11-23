@@ -14,7 +14,9 @@
     "settings": "Settings",
     "logout": "Log out",
     "soon": "Soon",
-    "comingSoon": "Coming soon"
+    "comingSoon": "Coming soon",
+    "accounts": "Accounts",
+    "more": "More"
   },
   "auth": {
     "loginTitle": "Sign in",
@@ -30,6 +32,8 @@
     "goLogin": "Sign in",
     "or": "or",
     "passwordHint": "At least 8 characters",
+    "showPassword": "Show",
+    "hidePassword": "Hide",
     "forgotLink": "Forgot your password?",
     "forgotTitle": "Recover password",
     "forgotIntro": "Enter your account email and we'll send you a link to choose a new password.",
@@ -69,7 +73,22 @@
       "dark": "Dark"
     },
     "save": "Save",
-    "saved": "Changes saved"
+    "saved": "Changes saved",
+    "notifications": {
+      "sectionTitle": "Notifications",
+      "title": "Customize notifications",
+      "intro": "Choose which alerts you want and how to receive them.",
+      "active": "Active",
+      "inactive": "Inactive",
+      "saved": "Notification preferences saved",
+      "deliveryNote": "Preferences are saved to your account. Email delivery and browser push notifications will be enabled in a later stage.",
+      "channels": { "emailEnabled": "Email", "pushEnabled": "Browser (desktop or mobile)" },
+      "kinds": {
+        "DUE_SOON": { "title": "Upcoming bill", "description": "Notify before the due date." },
+        "DUE_TODAY": { "title": "Bill due today", "description": "Notify on the due date." },
+        "OVERDUE": { "title": "Overdue bill", "description": "Notify when a bill remains unpaid after its due date." }
+      }
+    }
   },
   "languages": {
     "es": "Español",
@@ -84,7 +103,8 @@
     "cancel": "Cancel",
     "save": "Save",
     "edit": "Edit",
-    "delete": "Delete"
+    "delete": "Delete",
+    "add": "Add"
   },
   "errors": {
     "auth": {
@@ -112,7 +132,8 @@
       "positive": "Must be greater than 0",
       "amount": "Invalid amount (max 2 decimals)",
       "min": "Value too low",
-      "max": "Value too high"
+      "max": "Value too high",
+      "color": "Invalid color"
     },
     "user": {
       "timezone": {
@@ -138,7 +159,8 @@
       "not_found": "Income not found",
       "end_before_start": "End can't be before start",
       "amount_before_start": "Amount can't apply before start",
-      "adjust_only_recurring": "Increases only apply to repeating income"
+      "adjust_only_recurring": "Increases only apply to repeating income",
+      "has_receipts": "The income has recorded receipts: end it or delete the receipts first"
     },
     "expense": {
       "not_found": "Expense not found",
@@ -147,7 +169,8 @@
       "end_only_recurring": "Only monthly fixed expenses can be ended",
       "end_before_start": "End can't be before start",
       "amount_before_start": "Amount can't apply before start",
-      "has_payments": "It has recorded payments: use “End” instead of deleting"
+      "has_payments": "It has recorded payments: use “End” instead of deleting",
+      "past_months_choice_required": "Say whether the previous months are already paid"
     },
     "occurrence": {
       "not_found": "Monthly expense not found"
@@ -169,6 +192,42 @@
     "timeline": {
       "invalid_months": "Choose between 1 and 120 months",
       "invalid_from": "The start month is too far away"
+    },
+    "account": {
+      "not_found": "The account doesn't exist",
+      "archived": "The account is archived",
+      "has_movements": "The account has movements: archive it instead of deleting it",
+      "adjustment_zero": "The real balance equals the current one",
+      "adjustment_required": "Enter the real balance"
+    },
+    "transfer": {
+      "same_account": "Choose two different accounts",
+      "not_found": "The transfer doesn't exist"
+    },
+    "adjustment": {
+      "not_found": "The adjustment doesn't exist"
+    },
+    "card": {
+      "not_found": "The card doesn't exist or is archived"
+    },
+    "payment": {
+      "not_found": "The payment doesn't exist"
+    },
+    "receipt": {
+      "not_found": "The income record doesn't exist",
+      "month_inactive": "The income doesn't apply to that month"
+    },
+    "exchange": {
+      "rate_required": "No stored dollar rate: enter it manually",
+      "invalid_rate": "Invalid rate"
+    },
+    "attachment": {
+      "invalid_type": "Only PDF, PNG, JPEG or WEBP are accepted",
+      "too_large": "Each file can be up to 10 MB",
+      "too_many": "At most 10 receipts per payment",
+      "required": "Choose at least one file",
+      "unreadable": "The file couldn't be read",
+      "not_found": "The receipt doesn't exist"
     }
   },
   "categories": {
@@ -235,7 +294,6 @@
     "installmentOf": "Installment {{n}}/{{total}}",
     "variable": "Variable amount",
     "pay": "Pay",
-    "payComingSoon": "Recording payments with receipts arrives in the next stage",
     "editOccurrence": "Edit “{{name}}” for this month",
     "editOccurrenceHint": "Changes this month only (e.g. the actual bill amount or a different due date).",
     "fields": {
@@ -291,7 +349,14 @@
     "endHint": "The expense stops appearing after the chosen month.",
     "deleteTitle": "Delete expense",
     "deleteMessage": "Delete “{{name}}” and all its months or installments? To keep history, use “End”.",
-    "nextAdjustmentInflation": "Next increase: {{month}} (with inflation)"
+    "nextAdjustmentInflation": "Next increase: {{month}} (with inflation)",
+    "pastMonths": {
+      "question_one": "It starts last month. Is that month already paid?",
+      "question_other": "It starts {{count}} months ago. Are the previous months already paid?",
+      "hint": "If you already paid them they're marked as paid (no account or receipt) and don't show as overdue.",
+      "yes": "Yes, they're paid",
+      "no": "No, they stay pending (shown as overdue)"
+    }
   },
   "incomes": {
     "new": "New income",
@@ -512,5 +577,154 @@
       "CURRENT": "current month",
       "FUTURE": "projected"
     }
+  },
+  "accounts": {
+    "intro": "Where your money is: banks, wallets, cash, savings and investments. Payments come out of an account and income goes into one.",
+    "new": "New account",
+    "newTitle": "New account",
+    "editTitle": "Edit account",
+    "create": "Create an account",
+    "empty": "You haven't added any accounts yet. Create at least one to record payments and income.",
+    "noneYet": "You need an account to record movements.",
+    "netWorth": "Net worth",
+    "allAccounts": "All active accounts",
+    "valuedAt": "Dollars valued at {{type}} ({{rate}})",
+    "noRate": "The dollar rate is missing to add up both currencies",
+    "savingsTotal": "Savings and investments",
+    "savingsHint": "Savings or investment accounts",
+    "inCurrency": "In {{currency}}",
+    "ofWhichSavings": "Savings: {{amount}}",
+    "openingInfo": "Opening balance {{amount}} on {{date}}",
+    "openingHint": "What the account holds today. Movements before that date don't change the balance.",
+    "movements": "Movements",
+    "hideMovements": "Hide movements",
+    "noMovements": "No movements yet.",
+    "beforeOpening": "before the opening balance, doesn't count",
+    "undo": "Undo",
+    "adjust": "Adjust balance",
+    "adjustTitle": "Adjust {{name}} balance",
+    "adjustHint": "Balance in Saver: {{amount}}. Enter the real balance and the difference is recorded (interest, fees, missing expenses).",
+    "realBalance": "Real balance ({{currency}})",
+    "adjustDiff": "Difference: {{amount}}",
+    "adjustPlaceholder": "E.g. this month's interest",
+    "archive": "Archive",
+    "unarchive": "Restore",
+    "archived": "Archived",
+    "archivedCount_one": "Show {{count}} archived account",
+    "archivedCount_other": "Show {{count}} archived accounts",
+    "deleteTitle": "Delete account",
+    "deleteMessage": "Delete \"{{name}}\"? Only possible if it has no movements.",
+    "cannotDelete": "The account has movements: archive it to hide it without losing history.",
+    "transfer": "Transfer",
+    "transferTitle": "Transfer between accounts",
+    "transferHint": "Between accounts in different currencies it is buying or selling dollars (MEP dollar or the rate you enter).",
+    "from": "From",
+    "to": "To",
+    "amountIn": "Amount ({{currency}})",
+    "namePlaceholder": "E.g. Galicia, Mercado Pago, Dollars",
+    "fields": {
+      "name": "Name",
+      "kind": "Type",
+      "openingBalance": "Current balance",
+      "openingDate": "As of",
+      "color": "Color"
+    },
+    "kind": {
+      "CHECKING": "Bank account",
+      "CASH": "Cash",
+      "WALLET": "Digital wallet",
+      "SAVINGS": "Savings",
+      "INVESTMENT": "Investment"
+    },
+    "kindHint": {
+      "CHECKING": "Everyday checking or savings account.",
+      "CASH": "Money in hand.",
+      "WALLET": "Mercado Pago, Ualá, Naranja X…",
+      "SAVINGS": "What you set aside to save (e.g. dollars). Counts as savings.",
+      "INVESTMENT": "Time deposits, funds, stocks, crypto. Counts as savings."
+    },
+    "movement": {
+      "PAYMENT": "Payment: {{name}}",
+      "RECEIPT": "Income: {{name}}",
+      "TRANSFER_IN": "Transfer from {{name}}",
+      "TRANSFER_OUT": "Transfer to {{name}}",
+      "ADJUSTMENT": "Balance adjustment {{name}}"
+    }
+  },
+  "cards": {
+    "title": "Cards",
+    "intro": "Used to group the expenses you pay with each card. Each installment is still paid separately.",
+    "new": "New card",
+    "placeholder": "E.g. Visa Galicia",
+    "field": "Card",
+    "none": "No card",
+    "items_one": "{{count}} expense",
+    "items_other": "{{count}} expenses",
+    "pending": "Pending: {{amount}}"
+  },
+  "rates": {
+    "title": "Dollar rates",
+    "intro": "Updated automatically from dolarapi.com. Each payment stores the rate used.",
+    "none": "No rates yet (they download when there is internet). Meanwhile you can enter the rate manually on each payment.",
+    "buy": "Buy",
+    "sell": "Sell",
+    "updated": "Updated: {{date}}",
+    "type": {
+      "label": "Dollar",
+      "OFICIAL": "Official",
+      "MEP": "MEP",
+      "BLUE": "Blue",
+      "TARJETA": "Card",
+      "CCL": "CCL",
+      "MAYORISTA": "Wholesale",
+      "CRIPTO": "Crypto",
+      "MANUAL": "manual rate"
+    },
+    "use": {
+      "OFICIAL": "USD expenses without a card and USD income",
+      "MEP": "Buying/selling dollars and valuing your net worth",
+      "TARJETA": "USD expenses paid by card",
+      "BLUE": "Reference",
+      "CCL": "Reference"
+    }
+  },
+  "payments": {
+    "title": "Pay {{name}} · {{month}}",
+    "view": "Payments",
+    "expected": "Expected",
+    "paid": "Paid",
+    "remaining": "Remaining",
+    "withCard": "Paid with {{card}}: from a peso account the card dollar rate is used.",
+    "history": "Recorded payments",
+    "new": "New payment",
+    "fromAccount": "From account",
+    "fromAccountShort": "From {{account}}",
+    "assumed": "Marked as paid when the expense was added (no account)",
+    "amount": "Amount ({{currency}})",
+    "date": "Date",
+    "notes": "Notes",
+    "files": "Receipts",
+    "filesHint": "PDF, PNG, JPEG or WEBP. Up to {{max}} files of 10 MB.",
+    "tooManyFiles": "At most {{max}} files per payment.",
+    "removeFile": "Remove {{name}}",
+    "submit": "Record payment",
+    "deleteTitle": "Delete payment",
+    "deleteMessage": "Delete the {{amount}} payment? Its receipts are deleted too and the money returns to the account.",
+    "conversionOut": "Leaves the account: {{amount}}",
+    "conversionIn": "Enters the account: {{amount}}",
+    "conversionRate": "({{type}} dollar: {{rate}})",
+    "manualRate": "Another rate (optional)",
+    "rateMissing": "No stored rate: enter it manually.",
+    "attach": "Attach",
+    "uploadFailed": "The payment was recorded but the receipts couldn't be uploaded ({{reason}}). You can attach them from the payment."
+  },
+  "receipts": {
+    "receive": "Receive",
+    "title": "Receive {{name}} · {{month}}",
+    "summary": "Received {{received}} of {{expected}}.",
+    "toAccount": "Into account",
+    "submit": "Record income",
+    "done": "Received this month",
+    "thisMonth": "This month: received {{received}} of {{expected}}"
   }
 }

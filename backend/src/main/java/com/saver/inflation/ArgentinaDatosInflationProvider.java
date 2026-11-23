@@ -1,5 +1,7 @@
 package com.saver.inflation;
 
+import com.saver.common.HttpJsonClient;
+import com.saver.common.ExternalApiException;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -31,7 +33,7 @@ class ArgentinaDatosInflationProvider implements InflationProvider {
     @Override
     public List<MonthlyRate> fetch() {
         JsonNode body = client.get(endpoint);
-        if (!body.isArray()) throw new InflationFetchException("ArgentinaDatos: unexpected response");
+        if (!body.isArray()) throw new ExternalApiException("ArgentinaDatos: unexpected response");
         List<MonthlyRate> result = new ArrayList<>();
         for (JsonNode n : body) {
             if (!n.hasNonNull("fecha") || !n.hasNonNull("valor") || !n.get("valor").isNumber()) continue;

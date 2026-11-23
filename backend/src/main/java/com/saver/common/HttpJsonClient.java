@@ -1,4 +1,4 @@
-package com.saver.inflation;
+package com.saver.common;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,29 +10,29 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 
 /** GET/POST de JSON con el HttpClient del JDK (sin dependencias extra). */
-class HttpJsonClient {
+public class HttpJsonClient {
 
     private static final Duration TIMEOUT = Duration.ofSeconds(20);
 
     private final HttpClient http;
     private final ObjectMapper json;
 
-    HttpJsonClient(HttpClient http, ObjectMapper json) {
+    public HttpJsonClient(HttpClient http, ObjectMapper json) {
         this.http = http;
         this.json = json;
     }
 
-    JsonNode get(URI uri) {
+    public JsonNode get(URI uri) {
         return send(HttpRequest.newBuilder(uri).GET());
     }
 
-    JsonNode post(URI uri, Object body) {
+    public JsonNode post(URI uri, Object body) {
         try {
             return send(HttpRequest.newBuilder(uri)
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(json.writeValueAsString(body))));
         } catch (IOException e) {
-            throw new InflationFetchException("Cannot serialize request", e);
+            throw new ExternalApiException("Cannot serialize request", e);
         }
     }
 
@@ -42,14 +42,14 @@ class HttpJsonClient {
         try {
             HttpResponse<String> res = http.send(req, HttpResponse.BodyHandlers.ofString());
             if (res.statusCode() / 100 != 2) {
-                throw new InflationFetchException(req.uri().getHost() + " responded " + res.statusCode());
+                throw new ExternalApiException(req.uri().getHost() + " responded " + res.statusCode());
             }
             return json.readTree(res.body());
         } catch (IOException e) {
-            throw new InflationFetchException(req.uri().getHost() + " unreachable: " + e.getMessage(), e);
+            throw new ExternalApiException(req.uri().getHost() + " unreachable: " + e.getMessage(), e);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new InflationFetchException("Interrupted", e);
+            throw new ExternalApiException("Interrupted", e);
         }
     }
 }

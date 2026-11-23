@@ -74,6 +74,13 @@ public class ExpenseOccurrence extends BaseEntity {
         return status == OccurrenceStatus.PENDING && paidAmount.signum() == 0;
     }
 
+    /** Total pagado (suma de los pagos) y estado: PENDING sin pagos, PARTIAL si falta, PAID si cubre lo previsto. */
+    public void applyPaid(BigDecimal paid) {
+        this.paidAmount = paid.setScale(2, java.math.RoundingMode.HALF_UP);
+        this.status = paid.signum() == 0 ? OccurrenceStatus.PENDING
+                : paid.compareTo(expectedAmount) >= 0 ? OccurrenceStatus.PAID : OccurrenceStatus.PARTIAL;
+    }
+
     public UUID getUserId() { return userId; }
     public Expense getExpense() { return expense; }
     public YearMonth getMonth() { return month; }

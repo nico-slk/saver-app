@@ -37,7 +37,13 @@ public final class ExpenseDtos {
             @Min(value = 1, message = "validation.min") @Max(value = 120, message = "validation.max") Short adjustEveryMonths,
             @DecimalMin(value = "0", message = "validation.min") @DecimalMax(value = "1000", message = "validation.max") BigDecimal adjustPercent,
             boolean adjustWithInflation,
-            @Size(max = 500, message = "validation.too_long") String notes) {}
+            @Size(max = 500, message = "validation.too_long") String notes,
+            UUID cardId,
+            /**
+             * Obligatorio si el gasto empieza antes del mes actual: true = los meses anteriores ya están pagos
+             * (se registran pagos "asumidos", sin cuenta ni comprobante); false = quedan pendientes/vencidos.
+             */
+            Boolean pastMonthsPaid) {}
 
     /**
      * Edición de una plantilla. Tipo, moneda, inicio y cantidad de cuotas no se editan (borrar y crear).
@@ -54,7 +60,9 @@ public final class ExpenseDtos {
             Boolean clearAdjustment,
             YearMonth endMonth,
             Boolean clearEnd,
-            @Size(max = 500, message = "validation.too_long") String notes) {}
+            @Size(max = 500, message = "validation.too_long") String notes,
+            UUID cardId,
+            Boolean clearCard) {}
 
     public record AmountChangeRequest(
             @NotNull(message = "validation.required") YearMonth effectiveMonth,
@@ -68,7 +76,7 @@ public final class ExpenseDtos {
             YearMonth startMonth, YearMonth endMonth, Integer installments, Integer remainingInstallments,
             Short dueDay, boolean variableAmount,
             Short adjustEveryMonths, BigDecimal adjustPercent, boolean adjustWithInflation, YearMonth nextAdjustmentMonth,
-            BigDecimal currentAmount, BigDecimal totalAmount, List<AmountVersion> amounts, String notes) {}
+            BigDecimal currentAmount, BigDecimal totalAmount, List<AmountVersion> amounts, String notes, UUID cardId) {}
 
     /** Edición puntual de una ocurrencia (ej. monto real de la factura de luz, otra fecha de vencimiento). */
     public record UpdateOccurrenceRequest(
@@ -86,5 +94,5 @@ public final class ExpenseDtos {
             YearMonth month, LocalDate dueDate, long daysLeft,
             Integer installmentNumber, Integer installments,
             BigDecimal expectedAmount, BigDecimal paidAmount, String currency,
-            String status, boolean variableAmount, boolean projected, String notes) {}
+            String status, boolean variableAmount, boolean projected, String notes, UUID cardId) {}
 }

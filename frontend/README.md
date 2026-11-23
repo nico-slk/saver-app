@@ -48,6 +48,8 @@ src/
 │   └── finance/   # Diálogos de aumento/baja, regla de aumentos, indicadores
 ├── features/
 │   ├── auth/        # Login, registro, Google, recuperar contraseña
+│   ├── accounts/    # Cuentas, patrimonio, transferencias, ajustes, tarjetas, cotizaciones
+│   ├── payments/    # Pagar (pagos parciales, cuenta, cotización, comprobantes)
 │   ├── categories/  # Categorías (useCategories, panel)
 │   ├── incomes/     # Página y formulario de ingresos
 │   ├── expenses/    # Gastos del mes, plantillas, formulario, vencimientos

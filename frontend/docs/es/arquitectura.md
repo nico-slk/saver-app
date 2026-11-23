@@ -19,10 +19,11 @@
 | `/reset-password?token=` | Elegir contraseña nueva (link del email) | Público |
 | `/?from=AAAA-MM&months=N` | Inicio (dashboard). `from`/`months`: rango del gráfico pasado + proyección (por defecto 6 meses antes y 6 después) | Protegido |
 | `/expenses?tab=month\|templates\|categories&month=AAAA-MM` | Gastos del mes, fijos y cuotas, categorías | Protegido |
-| `/incomes` | Ingresos | Protegido |
+| `/incomes` | Ingresos (con «Cobrar» del mes actual) | Protegido |
+| `/accounts` | Cuentas, patrimonio, tarjetas y cotizaciones | Protegido |
 | `/history?from=&to=&cat=&real=1` | Historial: período, filtro de categorías, valores ajustados por inflación y comparación | Protegido |
 | `/projections` | Proyecciones (horizonte y saldo inicial se recuerdan en el dispositivo; la inflación, en el perfil) | Protegido |
-| `/settings` | Ajustes (perfil, inflación por moneda, tema) | Protegido |
+| `/settings` | Ajustes (perfil, inflación, tema y notificaciones) | Protegido |
 | `*` | 404 | Protegido |
 
 Las rutas protegidas cuelgan de `ProtectedLayout`. Mientras se recupera la sesión muestra un loader; si no hay sesión, redirige a `/login` y recuerda la página pedida para volver después del login.
@@ -53,7 +54,7 @@ El backend responde `ProblemDetail` con un `code` (`auth.invalid_credentials`). 
 
 | Ancho | Navegación |
 |---|---|
-| `< 1024px` | Header superior (idioma, ajustes, salir) + barra inferior: Inicio, Gastos, Ingresos, Historial, Proyecciones |
+| `< 1024px` | Header superior (idioma, ajustes, salir) + barra inferior: Inicio, Gastos, Ingresos, Cuentas y «Más» (Historial, Proyecciones…) |
 | `≥ 1024px` | Menú lateral fijo con todas las secciones |
 
 Las secciones de etapas futuras aparecen deshabilitadas con la etiqueta “Pronto”. Las páginas se cargan de forma diferida (`React.lazy`): Recharts solo se descarga al entrar a una página con gráficos (Ajustes también es diferida porque muestra la inflación).
@@ -63,3 +64,11 @@ Las secciones de etapas futuras aparecen deshabilitadas con la etiqueta “Pront
 - `GET /api/months/{mes}` es la fuente del inicio y de «Gastos del mes»; el mes elegido vive en la URL (`?month=`).
 - Tras crear, editar o borrar ingresos, gastos o categorías, `useFinanceInvalidation()` refresca todas las consultas relacionadas.
 - Los montos se envían como string (`"15000.50"`) para no perder precisión.
+- Las preferencias de notificación se consultan y guardan en `/api/notifications/preferences`; no se persisten en el navegador.
+
+## Pagos y comprobantes
+
+- «Pagar» registra el pago (`POST /api/occurrences/{id}/payments`) y después sube los comprobantes (`multipart/form-data`). Son dos pedidos: si la subida falla, el pago ya quedó registrado, el diálogo no se cierra y se puede adjuntar desde el pago (sin pagar dos veces).
+- El cliente axios usa JSON por defecto; para subir archivos se indica `multipart/form-data` y el navegador agrega el *boundary*.
+- Los comprobantes se abren descargándolos con la sesión (`blob` → URL temporal): no hay links públicos.
+- La conversión de moneda se previsualiza con `GET /api/exchange-rates/convert`, así la regla de qué dólar usar vive solo en el backend.

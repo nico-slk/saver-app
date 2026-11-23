@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { NavLink, Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
@@ -18,18 +19,59 @@ const ICONS: Record<string, string> = {
   reports: 'M7 3h7l5 5v13H7zM14 3v5h5M10 13h6M10 17h6',
   settings: 'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm7.4-3a7.4 7.4 0 0 0-.1-1.3l2-1.6-2-3.4-2.4 1a7.6 7.6 0 0 0-2.2-1.3L14.3 3h-4l-.4 2.4a7.6 7.6 0 0 0-2.2 1.3l-2.4-1-2 3.4 2 1.6a7.4 7.4 0 0 0 0 2.6l-2 1.6 2 3.4 2.4-1a7.6 7.6 0 0 0 2.2 1.3l.4 2.4h4l.4-2.4a7.6 7.6 0 0 0 2.2-1.3l2.4 1 2-3.4-2-1.6c.1-.4.1-.9.1-1.3z',
   logout: 'M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3',
+  accounts: 'M3 7a2 2 0 0 1 2-2h13a1 1 0 0 1 1 1v2M3 7v11a2 2 0 0 0 2 2h14a1 1 0 0 0 1-1v-3M3 7h16a1 1 0 0 1 1 1v3m0 0h-4a2 2 0 0 0 0 4h4m0-4v4',
+  more: 'M5 12h.01M12 12h.01M19 12h.01',
 };
 
 const NAV: NavItem[] = [
   { to: '/', key: 'dashboard', icon: 'home', ready: true },
   { to: '/expenses', key: 'expenses', icon: 'expenses', ready: true },
   { to: '/incomes', key: 'incomes', icon: 'incomes', ready: true },
+  { to: '/accounts', key: 'accounts', icon: 'accounts', ready: true },
   { to: '/history', key: 'history', icon: 'history', ready: true },
   { to: '/projections', key: 'projections', icon: 'projections', ready: true },
   { to: '/investments', key: 'investments', icon: 'investments', ready: false },
   { to: '/reports', key: 'reports', icon: 'reports', ready: false },
   { to: '/settings', key: 'settings', icon: 'settings', ready: true },
 ];
+
+/** Secciones en la barra inferior del celular; el resto va en "Más". */
+const MOBILE_MAIN = ['dashboard', 'expenses', 'incomes', 'accounts'];
+
+function MoreMenu() {
+  const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+  const location = useLocation();
+  const items = NAV.filter((n) => !MOBILE_MAIN.includes(n.key) && n.key !== 'settings');
+  const active = items.some((i) => location.pathname.startsWith(i.to));
+  useEffect(() => setOpen(false), [location.pathname]);
+  return (
+    <div className="relative">
+      <button type="button" aria-expanded={open} aria-haspopup="menu" onClick={() => setOpen(!open)}
+        className={clsx('flex w-full flex-col items-center gap-0.5 py-2 text-[11px]', active || open ? 'text-brand-700 dark:text-brand-500' : 'text-slate-500')}>
+        <Icon name="more" />
+        {t('nav.more')}
+      </button>
+      {open && (
+        <>
+          <button type="button" aria-label={t('common.close')} className="fixed inset-0 z-10 cursor-default" onClick={() => setOpen(false)} />
+          <div role="menu" className="absolute right-2 bottom-full z-20 mb-2 w-52 rounded-xl border border-slate-200 bg-white p-1 shadow-lg dark:border-slate-700 dark:bg-slate-900">
+            {items.map((item) => (
+              <NavLink key={item.to} to={item.to} role="menuitem" aria-disabled={!item.ready}
+                className={({ isActive }) => clsx('flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm',
+                  !item.ready && 'pointer-events-none opacity-45',
+                  isActive ? 'bg-brand-50 text-brand-800 dark:bg-brand-800/30 dark:text-brand-100' : 'hover:bg-slate-100 dark:hover:bg-slate-800')}>
+                <Icon name={item.icon} />
+                <span className="flex-1">{t(`nav.${item.key}`)}</span>
+                {!item.ready && <span className="text-[10px] text-slate-500">{t('nav.soon')}</span>}
+              </NavLink>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
 
 function Icon({ name, className }: { name: string; className?: string }) {
   return (
@@ -117,7 +159,7 @@ function AppLayout() {
 
       {/* Bottom nav (mobile): solo secciones principales */}
       <nav className="no-print fixed inset-x-0 bottom-0 z-10 grid grid-cols-5 border-t border-slate-200 bg-white pb-[env(safe-area-inset-bottom)] lg:hidden dark:border-slate-800 dark:bg-slate-900">
-        {NAV.filter((n) => ['dashboard', 'expenses', 'incomes', 'history', 'projections'].includes(n.key)).map((item) => (
+        {NAV.filter((n) => MOBILE_MAIN.includes(n.key)).map((item) => (
           <NavLink
             key={item.to}
             to={item.to}
@@ -135,6 +177,7 @@ function AppLayout() {
             {t(`nav.${item.key}`)}
           </NavLink>
         ))}
+        <MoreMenu />
       </nav>
     </div>
   );

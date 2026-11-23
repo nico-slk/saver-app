@@ -48,6 +48,7 @@ class MonthlyFlowTest extends IntegrationTest {
         m.put("amount", amount);
         m.put("startMonth", start.toString());
         if (installments != null) m.put("installments", installments);
+        m.put("pastMonthsPaid", false); // como antes: los meses pasados quedan impagos
         return m;
     }
 

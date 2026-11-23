@@ -5,7 +5,7 @@ spring:
     # En local lee el .env del repo (ejecutar desde la carpeta backend). En prod se usan variables de entorno.
     import: optional:file:.env[.properties]
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5433}/${DB_NAME:saver}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5433}/${DB_NAME:saver}?sslmode=${DB_SSLMODE:disable}
     username: ${DB_USER:saver}
     password: ${DB_PASSWORD:saver}
   jpa:
@@ -80,6 +80,11 @@ app:
     argentina-datos-url: ${INFLATION_ARGENTINADATOS_URL:https://api.argentinadatos.com}
     bls-url: ${INFLATION_BLS_URL:https://api.bls.gov}
     bls-api-key: ${INFLATION_BLS_API_KEY:}
+  exchange:
+    # Cotizaciones del dólar de dolarapi.com (3 veces por día, al arrancar y al pedirlas si tienen más de 3 h).
+    enabled: ${EXCHANGE_SYNC_ENABLED:true}
+    sync-on-startup: ${EXCHANGE_SYNC_ON_STARTUP:true}
+    dolar-api-url: ${EXCHANGE_DOLARAPI_URL:https://dolarapi.com}
   defaults:
     timezone: America/Argentina/Buenos_Aires
     currency: ARS

@@ -1,5 +1,6 @@
 package com.saver.inflation;
 
+import com.saver.common.ExternalApiException;
 import java.util.List;
 
 /**
@@ -14,6 +15,6 @@ public interface InflationProvider {
     /** Nombre corto guardado como origen del dato. */
     String source();
 
-    /** Serie mensual disponible. Lanza {@link InflationFetchException} si la fuente no responde. */
+    /** Serie mensual disponible. Lanza {@link ExternalApiException} si la fuente no responde. */
     List<MonthlyRate> fetch();
 }

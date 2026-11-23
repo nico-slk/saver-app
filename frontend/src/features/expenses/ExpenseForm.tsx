@@ -7,7 +7,8 @@ import { Modal } from '@/components/ui/overlay';
 import { AdjustmentFields, adjustmentPayload, adjustmentState, type AdjustmentState } from '@/components/finance/AdjustmentFields';
 import { fieldErrors, translateError } from '@/lib/errors';
 import { formatMoney, type Currency } from '@/lib/format';
-import { monthKey } from '@/lib/month';
+import { monthKey, monthsBetween } from '@/lib/month';
+import { useCards } from '@/features/accounts/useAccounts';
 import { useAuthStore } from '@/stores/authStore';
 import { useCategories } from '@/features/categories/useCategories';
 import { useFinanceInvalidation } from '@/features/months/useFinanceInvalidation';
@@ -28,6 +29,9 @@ type FormState = {
   variableAmount: boolean;
   adjust: AdjustmentState;
   notes: string;
+  cardId: string;
+  /** Solo si empieza antes del mes actual: sin valor por defecto, hay que elegir. */
+  pastMonthsPaid: '' | 'yes' | 'no';
 };
 
 function initialState(expense: Expense | undefined, baseCurrency: Currency, defaultCategory: string): FormState {
@@ -44,6 +48,8 @@ function initialState(expense: Expense | undefined, baseCurrency: Currency, defa
     variableAmount: expense?.variableAmount ?? false,
     adjust: adjustmentState(expense),
     notes: expense?.notes ?? '',
+    cardId: expense?.cardId ?? '',
+    pastMonthsPaid: '',
   };
 }
 
@@ -55,6 +61,7 @@ export function ExpenseForm({ expense, onClose }: { expense?: Expense; onClose: 
   const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const { active, label } = useCategories();
+  const { active: cards } = useCards();
   const refresh = useFinanceInvalidation();
   const editing = !!expense;
   // Por defecto "Otros": evita cargar sin querer un gasto como alquiler.
@@ -63,6 +70,10 @@ export function ExpenseForm({ expense, onClose }: { expense?: Expense; onClose: 
     initialState(expense, user?.baseCurrency ?? 'ARS', defaultCategory),
   );
   const set = <K extends keyof FormState>(k: K, v: FormState[K]) => setF((s) => ({ ...s, [k]: v }));
+
+  const startsInPast = !editing && f.startMonth < monthKey();
+  const pastCount = startsInPast ? monthsBetween(f.startMonth, monthKey()) : 0;
+  const [pastMissing, setPastMissing] = useState(false);
 
   const save = useMutation({
     mutationFn: async () => {
@@ -73,6 +84,7 @@ export function ExpenseForm({ expense, onClose }: { expense?: Expense; onClose: 
           description: f.description,
           categoryId: f.categoryId,
           dueDay: dueDay ?? 0,
+          ...(f.cardId ? { cardId: f.cardId } : { clearCard: true }),
           variableAmount: f.variableAmount,
           notes: f.notes,
           ...(expense.kind === 'RECURRING'
@@ -98,6 +110,8 @@ export function ExpenseForm({ expense, onClose }: { expense?: Expense; onClose: 
         variableAmount: f.kind === 'RECURRING' && f.variableAmount,
         ...adjustment,
         notes: f.notes || null,
+        cardId: f.cardId || null,
+        pastMonthsPaid: startsInPast ? f.pastMonthsPaid === 'yes' : null,
       });
     },
     onSuccess: async () => {
@@ -114,6 +128,10 @@ export function ExpenseForm({ expense, onClose }: { expense?: Expense; onClose: 
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
+    if (startsInPast && f.pastMonthsPaid === '') {
+      setPastMissing(true);
+      return;
+    }
     save.mutate();
   };
 
@@ -215,6 +233,30 @@ export function ExpenseForm({ expense, onClose }: { expense?: Expense; onClose: 
               label={t('expenses.adjustLabel')} hint={t('expenses.adjustHint')}
               errors={{ adjustEveryMonths: err('adjustEveryMonths'), adjustPercent: err('adjustPercent') }} />
           </div>
+        )}
+
+        {cards.length > 0 && (
+          <Select label={t('cards.field')} name="cardId" value={f.cardId} onChange={(e) => set('cardId', e.target.value)}>
+            <option value="">{t('cards.none')}</option>
+            {cards.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+          </Select>
+        )}
+
+        {startsInPast && (
+          <fieldset className={clsx('space-y-2 rounded-lg p-3 text-sm',
+            pastMissing || err('pastMonthsPaid') ? 'bg-red-50 dark:bg-red-900/20' : 'bg-amber-50 dark:bg-amber-900/20')}>
+            <legend className="sr-only">{t('expenses.pastMonths.question', { count: pastCount })}</legend>
+            <p className="font-medium">{t('expenses.pastMonths.question', { count: pastCount })}</p>
+            <p className="text-xs text-slate-600 dark:text-slate-300">{t('expenses.pastMonths.hint')}</p>
+            {(['yes', 'no'] as const).map((v) => (
+              <label key={v} className="flex items-center gap-2">
+                <input type="radio" name="pastMonthsPaid" checked={f.pastMonthsPaid === v}
+                  onChange={() => { set('pastMonthsPaid', v); setPastMissing(false); }} />
+                {t(`expenses.pastMonths.${v}`)}
+              </label>
+            ))}
+            {(pastMissing || err('pastMonthsPaid')) && <p className="text-xs text-red-600">{t('errors.expense.past_months_choice_required')}</p>}
+          </fieldset>
         )}
 
         <Input label={t('expenses.fields.notes')} name="notes" maxLength={500}

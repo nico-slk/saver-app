@@ -59,9 +59,9 @@ public interface OccurrenceRepository extends JpaRepository<ExpenseOccurrence, U
     @Query("select o from ExpenseOccurrence o where o.expense.id = :expenseId and o.month >= :from")
     List<ExpenseOccurrence> findFrom(@Param("expenseId") UUID expenseId, @Param("from") YearMonth from);
 
+    @Query("select o from ExpenseOccurrence o where o.expense.id = :expenseId and o.month < :before")
+    List<ExpenseOccurrence> findBefore(@Param("expenseId") UUID expenseId, @Param("before") YearMonth before);
+
     @Query("select o from ExpenseOccurrence o where o.expense.id = :expenseId and o.month > :after")
     List<ExpenseOccurrence> findAfter(@Param("expenseId") UUID expenseId, @Param("after") YearMonth after);
-
-    @Query("select count(o) > 0 from ExpenseOccurrence o where o.expense.id = :expenseId and (o.paidAmount > 0 or o.status <> :pending)")
-    boolean hasPayments(@Param("expenseId") UUID expenseId, @Param("pending") OccurrenceStatus pending);
 }

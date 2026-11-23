@@ -1,6 +1,8 @@
 package com.saver.expense;
 
+import com.saver.card.CardRepository;
 import com.saver.category.CategoryService;
+import com.saver.payment.PaymentService;
 import com.saver.common.ApiException;
 import com.saver.common.Money;
 import com.saver.common.Months;
@@ -23,11 +25,16 @@ public class ExpenseService {
     private final ExpenseRepository expenses;
     private final OccurrenceService occurrences;
     private final CategoryService categories;
+    private final CardRepository cards;
+    private final PaymentService payments;
 
-    public ExpenseService(ExpenseRepository expenses, OccurrenceService occurrences, CategoryService categories) {
+    public ExpenseService(ExpenseRepository expenses, OccurrenceService occurrences, CategoryService categories,
+                          CardRepository cards, PaymentService payments) {
         this.expenses = expenses;
         this.occurrences = occurrences;
         this.categories = categories;
+        this.cards = cards;
+        this.payments = payments;
     }
 
     @Transactional(readOnly = true)
@@ -35,9 +42,14 @@ public class ExpenseService {
         return expenses.findAllWithAmounts(userId);
     }
 
+    /** {@code current}: mes actual del usuario (define qué meses son "pasados"). */
     @Transactional
-    public Expense create(UUID userId, CreateExpenseRequest req) {
+    public Expense create(UUID userId, CreateExpenseRequest req, YearMonth current) {
         categories.requireUsable(userId, req.categoryId());
+        if (req.startMonth().isBefore(current) && req.pastMonthsPaid() == null) {
+            throw ApiException.field("pastMonthsPaid", "expense.past_months_choice_required");
+        }
+        if (req.cardId() != null) requireCard(userId, req.cardId());
         if (req.kind() == ExpenseKind.INSTALLMENTS && req.installments() == null) {
             throw new ApiException(HttpStatus.BAD_REQUEST, "expense.installments_required");
         }
@@ -49,7 +61,13 @@ public class ExpenseService {
             e.setAdjustment(req.adjustEveryMonths(), req.adjustPercent(), req.adjustWithInflation());
         }
         e.setNotes(blankToNull(req.notes()));
-        return expenses.save(e);
+        e.setCardId(req.cardId());
+        expenses.save(e);
+        if (req.startMonth().isBefore(current) && Boolean.TRUE.equals(req.pastMonthsPaid())) {
+            occurrences.ensureGenerated(userId, current);
+            payments.assumePaidBefore(userId, e, current);
+        }
+        return e;
     }
 
     /** {@code current}: mes actual del usuario; los cambios de vencimiento aplican desde ahí. */
@@ -86,6 +104,12 @@ public class ExpenseService {
             }
         }
         if (req.notes() != null) e.setNotes(blankToNull(req.notes()));
+        if (Boolean.TRUE.equals(req.clearCard())) {
+            e.setCardId(null);
+        } else if (req.cardId() != null) {
+            requireCard(userId, req.cardId());
+            e.setCardId(req.cardId());
+        }
         return e;
     }
 
@@ -105,7 +129,7 @@ public class ExpenseService {
     @Transactional
     public void delete(UUID userId, UUID id) {
         Expense e = owned(userId, id);
-        if (occurrences.hasPayments(e)) throw new ApiException(HttpStatus.CONFLICT, "expense.has_payments");
+        if (payments.hasRealPayments(e.getId())) throw new ApiException(HttpStatus.CONFLICT, "expense.has_payments");
         expenses.delete(e);
     }
 
@@ -123,7 +147,12 @@ public class ExpenseService {
                 e.getStartMonth(), e.getEndMonth(), e.getInstallments(), remaining, e.getDueDay(), e.isVariableAmount(),
                 e.getAdjustEveryMonths(), e.getAdjustPercent(), e.isAdjustWithInflation(),
                 ExpenseSchedule.nextAdjustment(e, current),
-                e.amountFor(ref), total, versions, e.getNotes());
+                e.amountFor(ref), total, versions, e.getNotes(), e.getCardId());
+    }
+
+    private void requireCard(UUID userId, UUID cardId) {
+        cards.findByIdAndUserId(cardId, userId).filter(c -> !c.isArchived())
+                .orElseThrow(() -> ApiException.field("cardId", "card.not_found"));
     }
 
     private Expense owned(UUID userId, UUID id) {

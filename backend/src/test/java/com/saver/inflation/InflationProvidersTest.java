@@ -1,5 +1,7 @@
 package com.saver.inflation;
 
+import com.saver.common.HttpJsonClient;
+import com.saver.common.ExternalApiException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -76,6 +78,6 @@ class InflationProvidersTest {
     void errorsAreReportedAsFetchExceptions() {
         response.set("!boom");
         assertThatThrownBy(() -> new ArgentinaDatosInflationProvider(client, base()).fetch())
-                .isInstanceOf(InflationFetchException.class).hasMessageContaining("500");
+                .isInstanceOf(ExternalApiException.class).hasMessageContaining("500");
     }
 }

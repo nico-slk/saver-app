@@ -13,6 +13,7 @@ const DashboardPage = lazy(() => import('@/pages/DashboardPage').then((m) => ({ 
 const ExpensesPage = lazy(() => import('@/features/expenses/ExpensesPage').then((m) => ({ default: m.ExpensesPage })));
 const HistoryPage = lazy(() => import('@/features/history/HistoryPage').then((m) => ({ default: m.HistoryPage })));
 const ProjectionsPage = lazy(() => import('@/features/projections/ProjectionsPage').then((m) => ({ default: m.ProjectionsPage })));
+const AccountsPage = lazy(() => import('@/features/accounts/AccountsPage').then((m) => ({ default: m.AccountsPage })));
 const SettingsPage = lazy(() => import('@/pages/SettingsPage').then((m) => ({ default: m.SettingsPage })));
 const IncomesPage = lazy(() => import('@/features/incomes/IncomesPage').then((m) => ({ default: m.IncomesPage })));
 
@@ -61,6 +62,7 @@ export default function App() {
         <Route index element={<Page><DashboardPage /></Page>} />
         <Route path="expenses" element={<Page><ExpensesPage /></Page>} />
         <Route path="incomes" element={<Page><IncomesPage /></Page>} />
+        <Route path="accounts" element={<Page><AccountsPage /></Page>} />
         <Route path="history" element={<Page><HistoryPage /></Page>} />
         <Route path="projections" element={<Page><ProjectionsPage /></Page>} />
         <Route path="settings" element={<Page><SettingsPage /></Page>} />

@@ -5,12 +5,37 @@
 Este documento describe **qué** hace Saver. Es la referencia funcional para el backend y el frontend.
 Las secciones marcadas con ✅ están implementadas; las marcadas con 🛠️ todavía no. Las parciales lo aclaran.
 
-## Monedas y cotización 🛠️
+## Monedas y cotización ✅
 
 - Monedas soportadas: **ARS** y **USD**. Cada usuario elige su moneda principal.
-- Cotización: **dólar oficial, valor venta**, obtenida de una API pública (dolarapi.com). Si falla, se carga a mano.
-- Cada cobro o pago en USD guarda la cotización usada. Cada cierre de mes guarda la cotización del día del cierre.
+- Cotizaciones de [dolarapi.com](https://dolarapi.com) (oficial, MEP, tarjeta, blue, CCL…), guardadas por día. Se descargan 3 veces por día, al arrancar y al pedirlas si tienen más de 3 horas. Sin internet se carga la cotización a mano en cada movimiento.
+- **Qué dólar se usa según el uso**:
+
+| Operación | Dólar | Precio |
+|---|---|---|
+| Gasto en USD pagado desde una cuenta en pesos, **con tarjeta** | Tarjeta | Venta |
+| Gasto en USD pagado desde una cuenta en pesos, sin tarjeta | Oficial | Venta |
+| Gasto en pesos pagado desde una cuenta en dólares | Oficial | Compra |
+| Ingreso en USD cobrado en una cuenta en pesos | Oficial | Compra |
+| Transferencia entre cuentas de distinta moneda (comprar/vender dólares) | MEP | Venta al comprar, compra al vender |
+| Valuación del patrimonio | MEP | Compra |
+
+- Cada pago, cobro y transferencia guarda la cotización usada (tipo y valor); siempre se puede indicar otra a mano (queda como `MANUAL`).
 - Las proyecciones se muestran en valores **nominales** y **reales** (descontando la inflación de la moneda, ver [Inflación](#inflación-)).
+
+## Cuentas ✅
+
+- Tipos: **cuenta bancaria**, **efectivo**, **billetera virtual**, **ahorro** e **inversión** (estas dos cuentan como ahorro), en ARS o USD.
+- **Saldo** = saldo inicial a una fecha + cobros + transferencias entrantes − pagos − transferencias salientes ± ajustes. Los movimientos anteriores a la fecha del saldo inicial no lo modifican (ya están incluidos en él).
+- **Patrimonio**: suma de todas las cuentas activas en la moneda principal; los dólares se valúan a MEP compra.
+- **Transferencias** entre cuentas propias; si las monedas difieren, es una compra o venta de dólares.
+- **Ajustar saldo**: se carga el saldo real y se registra la diferencia (intereses, comisiones, gastos no cargados).
+- Una cuenta con movimientos no se borra: se **archiva** (deja de aparecer para nuevos movimientos, conserva el historial).
+
+## Tarjetas ✅
+
+- Solo **agrupan** gastos: un gasto puede indicar con qué tarjeta se paga y en «Gastos del mes» se muestran juntos con el total pendiente. No hay resumen, cierre ni pago del resumen: **cada cuota se paga por separado**.
+- Un gasto en USD con tarjeta se paga con el dólar tarjeta. Borrar una tarjeta la archiva.
 
 ## Ingresos ✅
 
@@ -45,11 +70,17 @@ Un gasto se define una vez como **plantilla** y genera **ocurrencias** mensuales
 - **Ocurrencias**: se generan automáticamente desde las plantillas hasta el mes actual (al consultar un mes). Los meses futuros se calculan sin guardarse. Las ocurrencias impagas de meses anteriores aparecen como **vencidas** en el mes actual.
 - **Edición**: tipo, moneda, mes de inicio y cantidad de cuotas no se editan (se borra y se crea de nuevo). El monto cambia con «Registrar aumento» para conservar el historial; las ocurrencias sin pagos se recalculan.
 
-## Pagos y comprobantes 🛠️
+## Pagos y comprobantes ✅
 
-- Estados de una ocurrencia: **PENDIENTE → PARCIAL → PAGADO**, o **VENCIDO** si pasó el vencimiento sin completarse.
-- Una ocurrencia admite **varios pagos** (ej. pago mínimo de la tarjeta). Cada pago tiene monto, fecha, moneda, cotización, observaciones y **varios adjuntos** (PDF, PNG, JPEG…).
-- La interfaz lista los gastos ordenados por vencimiento, con los días restantes, el número de cuota y un botón **Pagar** que abre el formulario de pago.
+- Estados de una ocurrencia: **PENDIENTE → PARCIAL → PAGADO**, o **VENCIDO** si pasó el vencimiento sin completarse. El estado sale de la suma de sus pagos (se puede pagar de más, ej. una factura de luz más alta).
+- Una ocurrencia admite **varios pagos**. Cada pago tiene cuenta de origen, monto (en la moneda del gasto), lo que salió de la cuenta (en su moneda), cotización, fecha, observaciones y **hasta 10 comprobantes** (PDF, PNG, JPEG, WEBP; 10 MB c/u). El tipo se valida por el contenido del archivo; se descargan a través de la API con la sesión.
+- Borrar un pago devuelve el monto a la cuenta, borra sus comprobantes y recalcula el estado.
+- **Meses pasados**: al crear un gasto que empieza antes del mes actual hay que responder si esos meses ya están pagos (sin valor por defecto). Si sí, se registran **pagos asumidos** (sin cuenta ni comprobante, no mueven saldos). Un gasto con solo pagos asumidos se puede borrar.
+
+## Cobros de ingresos ✅
+
+- «Cobrar» registra que un ingreso del mes entró a una cuenta (total o en partes), con fecha, cotización si la cuenta es de otra moneda y observaciones.
+- Un ingreso con cobros no se borra (los saldos dependen de ellos): se da de baja o se borran los cobros primero.
 
 ## Cierre de mes 🛠️
 

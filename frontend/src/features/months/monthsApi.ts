@@ -20,7 +20,7 @@ export type MonthView = {
   projected: boolean;
   totals: CurrencyTotals[];
   byCategory: { categoryId: string; currency: Currency; amount: number }[];
-  incomes: { incomeId: string; description: string; kind: IncomeKind; currency: Currency; amount: number; recurring: boolean }[];
+  incomes: { incomeId: string; description: string; kind: IncomeKind; currency: Currency; amount: number; recurring: boolean; received: number }[];
   occurrences: Occurrence[];
   overdue: Occurrence[];
 };

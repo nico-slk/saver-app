@@ -18,9 +18,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class IncomeService {
 
     private final IncomeRepository incomes;
+    private final IncomeReceiptRepository receipts;
 
-    public IncomeService(IncomeRepository incomes) {
+    public IncomeService(IncomeRepository incomes, IncomeReceiptRepository receipts) {
         this.incomes = incomes;
+        this.receipts = receipts;
     }
 
     @Transactional(readOnly = true)
@@ -77,7 +79,10 @@ public class IncomeService {
 
     @Transactional
     public void delete(UUID userId, UUID id) {
-        incomes.delete(owned(userId, id));
+        Income income = owned(userId, id);
+        // Con cobros registrados se da de baja (fin) en lugar de borrarse: los saldos de las cuentas dependen de ellos.
+        if (receipts.existsByIncomeId(income.getId())) throw new ApiException(HttpStatus.CONFLICT, "income.has_receipts");
+        incomes.delete(income);
     }
 
     public static IncomeResponse toResponse(Income i, YearMonth current) {

@@ -71,6 +71,22 @@ user_inflation        -- user's manual inflation per currency (replaces users.mo
   user_id, currency, monthly_rate, updated_at   PK (user_id, currency)
 
 incomes += adjust_every_months?, adjust_percent?, adjust_with_inflation   -- increase rule (V4)
+accounts              -- accounts (V5): kind CHECKING | CASH | WALLET | SAVINGS | INVESTMENT
+  id, user_id, name, kind, currency, opening_balance, opening_date, color, archived_at
+cards                 -- cards (only group expenses); expenses.card_id → cards
+  id, user_id, name, color, archived_at
+exchange_rates        -- rates per day and type (pesos per dollar)   PK (day, type)
+  day, type (OFICIAL | MEP | BLUE | TARJETA | CCL | MAYORISTA | CRIPTO), buy?, sell, source, fetched_at
+payments              -- occurrence payments; assumed = past months (no account)
+  id, user_id, occurrence_id, account_id?, paid_on, amount, account_amount?, rate?, rate_type?, notes, assumed
+payment_attachments   -- receipts (the file lives in storage)
+  id, user_id, payment_id, storage_key, file_name, content_type, size_bytes
+income_receipts       -- income receipts per month
+  id, user_id, income_id, month, account_id, received_on, amount, account_amount, rate?, rate_type?, notes
+transfers             -- between own accounts (buy/sell dollars if currency differs)
+  id, user_id, from_account_id, to_account_id, transfer_on, from_amount, to_amount, rate?, rate_type?, notes
+account_adjustments   -- signed balance adjustments
+  id, user_id, account_id, adjusted_on, amount, notes
 ```
 
 ## Connecting to the local database

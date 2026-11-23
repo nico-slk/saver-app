@@ -110,7 +110,7 @@ public class OccurrenceService {
                     ExpenseSchedule.installmentNumber(e, month), e.getInstallments(),
                     e.isVariableAmount() && averages.containsKey(e.getId()) ? averages.get(e.getId())
                             : ExpenseSchedule.estimatedAmount(e, month, curves.of(e.getCurrency())), Money.ZERO, e.getCurrency(),
-                    OccurrenceStatus.PENDING.name(), e.isVariableAmount(), true, null));
+                    OccurrenceStatus.PENDING.name(), e.isVariableAmount(), true, null, e.getCardId()));
         }
         result.sort(Comparator.comparing(OccurrenceResponse::dueDate).thenComparing(OccurrenceResponse::description));
         return result;
@@ -121,7 +121,10 @@ public class OccurrenceService {
         ExpenseOccurrence o = occurrences.findOwned(id, userId)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "occurrence.not_found"));
         if (req.dueDate() != null) o.setDueDate(req.dueDate());
-        if (req.expectedAmount() != null) o.setExpectedAmount(Money.of(req.expectedAmount()));
+        if (req.expectedAmount() != null) {
+            o.setExpectedAmount(Money.of(req.expectedAmount()));
+            o.applyPaid(o.getPaidAmount());
+        }
         if (req.notes() != null) o.setNotes(req.notes().isBlank() ? null : req.notes().trim());
         return o;
     }
@@ -145,16 +148,13 @@ public class OccurrenceService {
         occurrences.findAfter(e.getId(), end).stream().filter(ExpenseOccurrence::isUntouched).forEach(occurrences::delete);
     }
 
-    boolean hasPayments(Expense e) {
-        return occurrences.hasPayments(e.getId(), OccurrenceStatus.PENDING);
-    }
-
     public static OccurrenceResponse toResponse(ExpenseOccurrence o, LocalDate today) {
         Expense e = o.getExpense();
         boolean overdue = o.getStatus() != OccurrenceStatus.PAID && o.getDueDate().isBefore(today);
         return new OccurrenceResponse(o.getId(), e.getId(), e.getDescription(), e.getCategoryId(), e.getKind(),
                 o.getMonth(), o.getDueDate(), ChronoUnit.DAYS.between(today, o.getDueDate()),
                 o.getInstallmentNumber(), e.getInstallments(), o.getExpectedAmount(), o.getPaidAmount(),
-                o.getCurrency(), overdue ? "OVERDUE" : o.getStatus().name(), e.isVariableAmount(), false, o.getNotes());
+                o.getCurrency(), overdue ? "OVERDUE" : o.getStatus().name(), e.isVariableAmount(), false, o.getNotes(),
+                e.getCardId());
     }
 }

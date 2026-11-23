@@ -71,6 +71,7 @@ class InflationFlowTest extends IntegrationTest {
         m.put("currency", "ARS");
         m.put("amount", "100000");
         m.put("startMonth", start.toString());
+        m.put("pastMonthsPaid", false); // como antes: los meses pasados quedan impagos
         m.put("adjustEveryMonths", 3);
         m.put("adjustWithInflation", true);
         return call(post("/api/expenses"), m).get("id").asText();

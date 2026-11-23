@@ -2,24 +2,51 @@
 
 [🇪🇸 Español](README.md) · 🇬🇧 English
 
-Responsive web app to manage expenses, income and savings, and to project investments.
+Saver is a responsive web app for organizing personal finances in one place. It helps people understand what money comes in, which expenses need to be covered, and how their accounts may evolve so they can make everyday decisions with more clarity.
 
-This repository contains the whole project:
+## The problem it solves
 
-| Folder | Content |
+Income, installments, bills, and due dates are often scattered across notes, spreadsheets, reminders, and banking apps. That makes it hard to know what is available, which payments are coming up, and how an expense affects later months. Saver brings this information into a monthly view and connects movements to accounts and dates.
+
+## What it offers today
+
+- Record fixed income, one-off or recurring extras, and raises; track one-time, recurring, and installment expenses.
+- Review monthly balances, due dates, pending and overdue bills, and expenses by category.
+- Compare months and explore changes in income, spending, and savings, including inflation-adjusted values.
+- Project income, installments, expenses, and inflation across a chosen period in nominal or today's money.
+- Manage ARS and USD accounts, cards, transfers, balance adjustments, and net worth.
+- Record partial payments and income receipts, including exchange rates and supporting documents when relevant.
+- Set language, currency, time zone, light/dark theme, and notification preferences.
+- Use password or optional Google sign-in, protected sessions, and email password recovery.
+
+## Potential benefits and impact
+
+By bringing financial information together, Saver can reduce missed payments and the mental load of remembering each bill; make demanding months visible earlier; help identify expenses growing faster than inflation; and support decisions about spending, saving, and budget adjustments. As a person records more movements, projections can help anticipate commitments and compare scenarios.
+
+The impact depends on how consistently and accurately the data is entered. Saver provides organization and estimates to support decisions; it does not replace personal judgment or constitute financial advice.
+
+## Current status
+
+Operational capabilities are listed above. Notification preferences can be saved per account, including desired alert types and email or browser channels; automatic delivery through those channels is still being prepared. The menu may preview future capabilities such as month closing, budgets, bank imports, investment simulations, and downloadable reports. They are not available until their rules, screens, and services are operational.
+
+## Technology and layout
+
+| Folder | Contents |
 |---|---|
-| [`backend/`](backend/README.en.md) | REST API — Java 21, Spring Boot 3.5, PostgreSQL, Flyway. Includes the `docker-compose.yml` with local infrastructure |
-| [`frontend/`](frontend/README.en.md) | SPA — React 19, TypeScript, Vite, Tailwind CSS, Zustand |
-| [`docs/`](docs/README.md) | General documentation: business, technical and deployment |
-| `run.sh` | Starts the whole development environment with one command |
+| [`backend/`](backend/README.en.md) | REST API — Java 21, Spring Boot, PostgreSQL, and Flyway |
+| [`frontend/`](frontend/README.en.md) | SPA — React, TypeScript, Vite, Tailwind CSS, and Zustand |
+| [`docs/`](docs/README.md) | Product, architecture, and deployment documentation |
+| `run.sh` | Starts local infrastructure and the frontend; run the backend separately |
+
+The app separates its UI, API, database, and object storage so a cloud provider can be chosen later based on cost, region, free-tier limits, backups, and expected volume. No final provider is assumed.
 
 ## Quick start
 
-Requirements: JDK 21, Maven 3.9+, Node 20+ and Docker Desktop.
+Requirements: JDK 21, Maven 3.9+, Node 20+, and Docker Desktop.
 
 ```bash
-cp backend/.env.example backend/.env    # first time only
-./run.sh                                # Git Bash: Docker + backend + frontend
+cp backend/.env.example backend/.env    # first run only
+./run.sh                                # Git Bash: Docker + frontend (run backend separately)
 ```
 
 Or separately:
@@ -33,16 +60,8 @@ cd frontend && npm install && npm run dev                   # App at http://loca
 |---|---|
 | Frontend (Vite) | 5173 |
 | Backend (Spring Boot) | 8080 |
-| PostgreSQL (Docker) | 5433 (`DB_PORT` in `backend/.env`; 5432 stays free for an installed Postgres) |
+| PostgreSQL (Docker) | 5433 |
 | SeaweedFS, S3 API (Docker) | 8333 |
-| Mailpit, development emails (Docker) | 8025 (web inbox) |
+| Mailpit, development email | 8025 |
 
-## Repository layout
-
-- `docker-compose.yml` lives in `backend/` because it is backend infrastructure and uses the same `backend/.env` as Spring Boot (`DB_PORT`, credentials, bucket): a single source of configuration.
-- A single root `.gitignore` and `.gitattributes` cover all three folders.
-- `.env` files are never committed (only `.env.example`).
-
-## Commits
-
-[Conventional Commits](https://www.conventionalcommits.org/) naming the area: `feat(backend): …`, `fix(frontend): …`, `docs: …`.
+`.env` files contain local configuration and should stay out of the repository; use `.env.example` as a reference.

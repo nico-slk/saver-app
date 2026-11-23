@@ -20,8 +20,9 @@ public final class MonthDtos {
 
     public record CategoryTotal(UUID categoryId, String currency, BigDecimal amount) {}
 
+    /** {@code received}: lo cobrado en el mes (suma de los cobros registrados). */
     public record MonthIncome(UUID incomeId, String description, IncomeKind kind, String currency,
-                              BigDecimal amount, boolean recurring) {}
+                              BigDecimal amount, boolean recurring, BigDecimal received) {}
 
     /** {@code projected}: mes futuro calculado desde las plantillas (no editable). */
     public record MonthResponse(

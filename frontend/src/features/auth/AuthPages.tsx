@@ -3,6 +3,7 @@ import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Alert, Button, Card, Input } from '@/components/ui';
+import { PasswordInput } from '@/components/ui/PasswordInput';
 import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
 import { currentLanguage } from '@/i18n';
 import { fieldErrors, translateError } from '@/lib/errors';
@@ -92,10 +93,9 @@ export function LoginPage() {
           value={form.email}
           onChange={(e) => setForm({ ...form, email: e.target.value })}
         />
-        <Input
+        <PasswordInput
           label={t('auth.password')}
           name="password"
-          type="password"
           autoComplete="current-password"
           required
           value={form.password}
@@ -161,10 +161,9 @@ export function RegisterPage() {
           error={fieldMsg('email')}
           onChange={(e) => setForm({ ...form, email: e.target.value })}
         />
-        <Input
+        <PasswordInput
           label={t('auth.password')}
           name="password"
-          type="password"
           autoComplete="new-password"
           required
           minLength={8}

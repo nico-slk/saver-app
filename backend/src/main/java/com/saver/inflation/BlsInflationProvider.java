@@ -1,5 +1,7 @@
 package com.saver.inflation;
 
+import com.saver.common.HttpJsonClient;
+import com.saver.common.ExternalApiException;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -49,7 +51,7 @@ class BlsInflationProvider implements InflationProvider {
 
         JsonNode res = client.post(endpoint, body);
         if (!"REQUEST_SUCCEEDED".equals(res.path("status").asText())) {
-            throw new InflationFetchException("BLS: " + res.path("status").asText() + " " + res.path("message"));
+            throw new ExternalApiException("BLS: " + res.path("status").asText() + " " + res.path("message"));
         }
         TreeMap<YearMonth, BigDecimal> index = new TreeMap<>();
         for (JsonNode series : res.path("Results").path("series")) {

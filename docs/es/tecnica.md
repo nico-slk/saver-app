@@ -13,16 +13,16 @@ Navegador
                                                     └─ Google Identity (opcional)
 ```
 
-El frontend entrega la interfaz. El backend expone una API REST, aplica autenticación y guarda perfiles y sesiones. PostgreSQL conserva los datos. En local, Docker Compose levanta PostgreSQL y SeaweedFS (object storage con API S3); el backend corre con Maven o IntelliJ. El paquete `storage` expone la interfaz `StorageService` con un adaptador S3, pero aún no existen endpoints de comprobantes que lo consuman.
+El frontend entrega la interfaz. El backend expone una API REST, aplica autenticación y reglas de dominio, y guarda datos de finanzas, preferencias y sesiones en PostgreSQL. En local, Docker Compose levanta PostgreSQL, SeaweedFS (API S3) y Mailpit. El backend corre con Maven o IntelliJ. Los comprobantes se guardan mediante `StorageService` y se sirven con autenticación.
 
 ## Componentes y responsabilidades
 
 | Área | Tecnología | Responsabilidad actual |
 |---|---|---|
 | `frontend/` | React 19, TypeScript, Vite, Tailwind | Rutas, formularios, preferencias visuales, textos ES/EN y consumo de API. |
-| Estado del cliente | Zustand + TanStack Query | Zustand guarda sesión y tema; TanStack Query consulta proveedores de acceso. |
+| Estado del cliente | Zustand + TanStack Query | Zustand guarda sesión y tema; TanStack Query gestiona datos del servidor. |
 | `backend/` | Java 21, Spring Boot 3.5 | API REST, validación, seguridad, reglas de cuentas y perfil. |
-| Datos | PostgreSQL 16, JPA, Flyway | Tablas `users` y `refresh_tokens`; migraciones versionadas. |
+| Datos | PostgreSQL 16, JPA, Flyway | Datos de perfil, finanzas, cuentas, movimientos, archivos y preferencias; migraciones versionadas. |
 | Acceso | JWT HS256, BCrypt, cookie HttpOnly | Access token corto en memoria; refresh token opaco, rotado, en cookie. |
 | Identidad externa | Google Identity Services / JWKS de Google | Verifica el ID token recibido del cliente cuando `GOOGLE_CLIENT_ID` está definido. |
 | Operación | Docker, Cloud Run, Firebase Hosting | Imagen del backend y entrega de la SPA. |
@@ -32,6 +32,7 @@ El frontend entrega la interfaz. El backend expone una API REST, aplica autentic
 ```text
 frontend/src/
   features/auth/      pantallas y cliente de autenticación
+  features/notifications/ preferencias de notificaciones
   stores/             sesión y preferencias locales
   lib/api.ts          Axios, idioma y renovación de token
   pages/              dashboard y ajustes
@@ -84,25 +85,30 @@ backend/src/main/
 | `POST /api/auth/logout` | Cookie opcional | Revoca la sesión y borra la cookie. |
 | `GET /api/me` | JWT | Devuelve el perfil. |
 | `PATCH /api/me` | JWT | Actualiza nombre, idioma, moneda o zona horaria. |
+| `GET/PUT /api/notifications/preferences` | JWT | Lee y guarda preferencias personales de avisos y canales; la entrega todavía no está activa. |
+| `GET/PUT /api/notifications/preferences` | JWT | Lee y guarda avisos elegidos y canales preferidos; no realiza envíos todavía. |
 | `/api/categories`, `/api/incomes`, `/api/expenses`, `/api/occurrences/{id}` | JWT | Categorías, ingresos, plantillas de gasto y ajuste de un mes (detalle en `backend/docs/es/api.md`). |
 | `GET /api/months/{AAAA-MM\|current}` | JWT | Balance del mes, vencimientos, vencidos y meses futuros proyectados. |
 | `GET /api/history`, `GET /api/history/compare` | JWT | Historial mensual y comparación entre meses. |
 | `GET /api/projections` | JWT | Proyección a N meses, nominal y en valores de hoy. |
 | `GET /api/inflation`, `PUT/DELETE /api/inflation/{moneda}/manual` | JWT | Inflación oficial por moneda (descarga diaria: ArgentinaDatos/INDEC y BLS), estimada y manual. |
 | `GET /api/timeline` | JWT | Serie pasado + proyección para el gráfico del inicio. |
+| `/api/accounts`, `/api/transfers`, `/api/cards` | JWT | Cuentas, saldos, patrimonio, transferencias, ajustes y tarjetas. |
+| `/api/occurrences/{id}/payments`, `/api/payments/{id}/attachments`, `/api/incomes/{id}/receipts` | JWT | Pagos parciales con comprobantes (storage) y cobros de ingresos. |
+| `GET /api/exchange-rates` | JWT | Cotizaciones del dólar (dolarapi) y conversión según el uso. |
 | `POST /api/auth/password/forgot`, `/reset` | No | Recuperación de contraseña por email (Mailpit en local, Brevo gratuito para envío real). |
 
 También están disponibles `GET /actuator/health`, Swagger en `/swagger-ui.html` y OpenAPI en `/v3/api-docs`.
 
 ## Datos y cambios de esquema
 
-Flyway ejecuta los SQL de `backend/src/main/resources/db/migration` al comenzar. Hibernate valida el esquema pero no lo modifica (`ddl-auto: validate`). Para cualquier cambio de datos: crear un archivo nuevo `V{n}__descripcion.sql`; no editar una migración ya aplicada. La primera migración crea `users` y `refresh_tokens`, con UUID, marcas de tiempo UTC e índices para correo y tokens.
+Flyway ejecuta los SQL de `backend/src/main/resources/db/migration` al comenzar. Hibernate valida el esquema pero no lo modifica (`ddl-auto: validate`). Para cualquier cambio de datos: crear un archivo nuevo `V{n}__descripcion.sql`; no editar una migración ya aplicada. Las migraciones versionan perfiles, autenticación, finanzas, cuentas, movimientos, adjuntos y preferencias.
 
 ## Integraciones y límites actuales
 
 - **Firebase Hosting → Cloud Run:** `frontend/firebase.json` redirige `/api/**` al servicio `saver-backend` en `southamerica-east1`. Esto mantiene mismo origen; Firebase solo reenvía hacia Cloud Run la cookie llamada `__session`, de ahí ese nombre.
 - **CORS:** en desarrollo Vite redirige `/api` a `localhost:8080`. En producción con el rewrite no hace falta CORS entre SPA y API, pero el backend conserva una lista de orígenes configurables para escenarios de dominios separados.
-- **Storage:** `StorageService` (puerto) + `S3StorageService` (adaptador). Claves UUID generadas por el servidor, límite de tamaño y URLs firmadas de hasta 1 hora. El proveedor se elige con `STORAGE_PROVIDER` (`s3-compatible` para SeaweedFS/Supabase/R2/GCS interoperable, `s3` para AWS). No hay endpoints de archivos ni metadata de adjuntos aún; cualquier endpoint futuro debe verificar que el archivo pertenezca al usuario antes de abrirlo.
+- **Storage:** `StorageService` (puerto) + `S3StorageService` (adaptador). Claves UUID generadas por el servidor, límite de tamaño y URLs firmadas de hasta 1 hora. El proveedor se elige con `STORAGE_PROVIDER` (`s3-compatible` para SeaweedFS/Supabase/R2/GCS interoperable, `s3` para AWS). Los endpoints de comprobantes verifican propiedad y requieren sesión.
 - **Tareas programadas:** existe una limpieza diaria de refresh tokens. Con más de una instancia, cada instancia podría ejecutarla; antes de agregar cierres de negocio se recomienda ShedLock o Cloud Scheduler.
 
 ## Controles operativos y pruebas

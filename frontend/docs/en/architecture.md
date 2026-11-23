@@ -19,10 +19,11 @@
 | `/reset-password?token=` | Choose a new password (email link) | Public |
 | `/?from=YYYY-MM&months=N` | Home (dashboard). `from`/`months`: range of the past + projection chart (default 6 months before and 6 after) | Protected |
 | `/expenses?tab=month\|templates\|categories&month=YYYY-MM` | Month expenses, fixed & installments, categories | Protected |
-| `/incomes` | Income | Protected |
+| `/incomes` | Income (with "Receive" for the current month) | Protected |
+| `/accounts` | Accounts, net worth, cards and rates | Protected |
 | `/history?from=&to=&cat=&real=1` | History: period, category filter, inflation-adjusted values and comparison | Protected |
 | `/projections` | Projections (horizon and starting balance remembered on the device; inflation in the profile) | Protected |
-| `/settings` | Settings (profile, inflation per currency, theme) | Protected |
+| `/settings` | Settings (profile, inflation, theme, and notifications) | Protected |
 | `*` | 404 | Protected |
 
 Protected routes hang from `ProtectedLayout`. While the session is being restored it shows a loader; with no session it redirects to `/login` and remembers the requested page to return after login.
@@ -53,7 +54,7 @@ The backend responds with a `ProblemDetail` carrying a `code` (`auth.invalid_cre
 
 | Width | Navigation |
 |---|---|
-| `< 1024px` | Top header (language, settings, log out) + bottom bar: Home, Expenses, Income, History, Projections |
+| `< 1024px` | Top header (language, settings, log out) + bottom bar: Home, Expenses, Income, Accounts and "More" (History, Projections…) |
 | `≥ 1024px` | Fixed sidebar with all sections |
 
 Sections from future stages are shown disabled with a "Soon" label. Pages are lazy-loaded (`React.lazy`): Recharts is only downloaded when a page with charts opens (Settings is lazy too because it shows inflation).
@@ -63,3 +64,11 @@ Sections from future stages are shown disabled with a "Soon" label. Pages are la
 - `GET /api/months/{month}` feeds Home and “This month”; the selected month lives in the URL (`?month=`).
 - After creating, editing or deleting income, expenses or categories, `useFinanceInvalidation()` refreshes every related query.
 - Amounts are sent as strings (`"15000.50"`) to avoid precision loss.
+- Notification preferences are read and saved through `/api/notifications/preferences`; they are not persisted in the browser.
+
+## Payments and receipts
+
+- "Pay" records the payment (`POST /api/occurrences/{id}/payments`) and then uploads the receipts (`multipart/form-data`). They are two requests: if the upload fails, the payment is already recorded, the dialog stays open and files can be attached from the payment (no double payment).
+- The axios client defaults to JSON; uploads set `multipart/form-data` and the browser adds the boundary.
+- Receipts are opened by downloading them with the session (`blob` → temporary URL): there are no public links.
+- Currency conversion is previewed with `GET /api/exchange-rates/convert`, so the rule of which dollar to use lives only in the backend.

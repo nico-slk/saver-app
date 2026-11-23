@@ -22,7 +22,7 @@ Configuration comes from **environment variables**. In development, the `backend
 | `GOOGLE_CLIENT_ID` | *(empty)* | Web OAuth Client ID. Empty = Google sign-in disabled |
 | `APP_ALLOWED_ORIGINS` | `http://localhost:5173` | CORS origins, comma-separated |
 | `COOKIE_SECURE` | `false` | `true` in production (HTTPS) |
-| `STORAGE_PROVIDER` | `s3-compatible` | `s3-compatible`: any S3-API service with its own endpoint (local SeaweedFS, Supabase Storage, R2, GCS with HMAC keys). `s3`: native AWS S3. `gcs`: reserved for a native adapter. |
+| `STORAGE_PROVIDER` | `s3-compatible` | `s3-compatible`: any S3-API service with its own endpoint (local SeaweedFS, Supabase Storage, R2, GCS with HMAC keys). `s3`: native AWS S3. `gcs`: reserved for a native adapter. `filesystem`: local folder (`STORAGE_ENDPOINT` = path, default `data/storage`), development without Docker only. |
 | `STORAGE_ENVIRONMENT` | `development` | `development` creates the bucket on startup. `production` requires a remote HTTPS endpoint and non-sample credentials. |
 | `STORAGE_ENDPOINT` | `http://localhost:8333` | SeaweedFS S3 API published by Docker Compose. Empty for AWS S3. |
 | `STORAGE_BUCKET` | `saver-dev-media` | Private bucket. In development the backend creates it if missing. |
@@ -41,6 +41,9 @@ Configuration comes from **environment variables**. In development, the `backend
 | `INFLATION_ARGENTINADATOS_URL` | `https://api.argentinadatos.com` | ARS inflation source (INDEC) |
 | `INFLATION_BLS_URL` | `https://api.bls.gov` | USD inflation source (US CPI) |
 | `INFLATION_BLS_API_KEY` | *(empty)* | Optional free BLS key (500 queries/day instead of 25) |
+| `EXCHANGE_SYNC_ENABLED` | `true` | Dollar rates download (dolarapi.com). `false` = entered manually |
+| `EXCHANGE_SYNC_ON_STARTUP` | `true` | Also download on startup |
+| `EXCHANGE_DOLARAPI_URL` | `https://dolarapi.com` | Rates source |
 | `STORAGE_MAX_FILE_SIZE_BYTES` | `10485760` | Max size per file (10 MiB). Keep it aligned with `spring.servlet.multipart.max-file-size`. |
 
 Generate a secure secret:
@@ -63,6 +66,7 @@ app:
   web:      { base-url }
   mail:     { provider, from-address, from-name, mailpit-url, brevo-api-key }
   inflation: { enabled, sync-on-startup, estimate-months, argentina-datos-url, bls-url, bls-api-key }
+  exchange:  { enabled, sync-on-startup, dolar-api-url }
   defaults: { timezone, currency, locale }
 ```
 
@@ -77,6 +81,7 @@ Code depends only on the `StorageService` interface; the provider is chosen by c
 | Cloudflare R2 | `s3-compatible` | `https://<account>.r2.cloudflarestorage.com` | R2 S3 token |
 | Google Cloud Storage (interoperable) | `s3-compatible` | `https://storage.googleapis.com` | Service account HMAC keys |
 | AWS S3 | `s3` | *(empty)* | Environment IAM identity |
+| Local without Docker | `filesystem` | `data/storage` (path) | — (not allowed in production) |
 
 In production use `STORAGE_ENVIRONMENT=production` and keep keys in Secret Manager. For a provider without an S3 API (or native GCS), implement `StorageService` and register it in `StorageConfiguration`.
 

@@ -30,7 +30,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<ProblemDetail> handleApi(ApiException ex) {
-        return ResponseEntity.status(ex.getStatus()).body(problem(ex.getStatus(), ex.getCode()));
+        ProblemDetail pd = problem(ex.getStatus(), ex.getCode());
+        if (!ex.getFields().isEmpty()) pd.setProperty("fields", ex.getFields());
+        return ResponseEntity.status(ex.getStatus()).body(pd);
     }
 
     @ExceptionHandler(AccessDeniedException.class)

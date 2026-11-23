@@ -48,6 +48,8 @@ src/
 │   └── finance/   # Increase/end dialogs, increase rule, stats
 ├── features/
 │   ├── auth/        # Login, sign-up, Google, password recovery
+│   ├── accounts/    # Accounts, net worth, transfers, adjustments, cards, rates
+│   ├── payments/    # Pay (partial payments, account, rate, receipts)
 │   ├── categories/  # Categories (useCategories, panel)
 │   ├── incomes/     # Income page and form
 │   ├── expenses/    # Month expenses, templates, form, due dates

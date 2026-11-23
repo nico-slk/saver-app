@@ -1,54 +1,49 @@
-# Saver: documentación de negocio
+# Saver: documentación de producto
 
-## Propósito
+## Finalidad y problema cotidiano
 
-Saver es una aplicación web pensada para que una persona pueda ordenar su vida financiera en un solo lugar. Su objetivo de producto es ayudar a registrar y entender ingresos, gastos, ahorro e inversiones, y facilitar la toma de decisiones. La solución está en construcción por etapas: hoy ofrece una base de acceso y personalización segura sobre la cual se incorporarán las herramientas financieras.
+Saver busca ayudar a las personas a ordenar su vida financiera y tomar decisiones cotidianas con información más clara. En la práctica, los pagos, las cuotas, los ingresos y los vencimientos suelen quedar repartidos entre varias aplicaciones, planillas y recordatorios. Esa dispersión dificulta conocer el balance real del mes, anticipar gastos y entender cuánto margen queda.
 
-## Qué puede hacer una persona hoy
+La aplicación reúne ingresos, gastos y cuentas; relaciona vencimientos con pagos; conserva el historial; y proyecta meses futuros. Así puede ayudar a reducir olvidos, detectar patrones de gasto, planificar compromisos y conversar con más claridad sobre ahorro y prioridades. El valor aumenta cuando los datos se mantienen actualizados. Sus proyecciones son estimaciones y no asesoramiento financiero.
 
-1. Crear una cuenta con nombre, correo electrónico y contraseña.
-2. Iniciar y cerrar sesión con correo y contraseña.
-3. Iniciar sesión con una cuenta de Google si el administrador habilitó esa opción.
-4. Mantener la sesión iniciada de forma segura al volver a abrir la aplicación.
-5. Consultar y actualizar su perfil: nombre, idioma, moneda principal y zona horaria.
-6. Elegir español o inglés, y cambiar entre tema claro, oscuro o el que sugiera el dispositivo.
-7. Cargar **ingresos**: fijos (sueldo), extras de un solo mes o extras que se repiten N meses o sin fin, y registrar aumentos desde un mes.
-8. Cargar **gastos**: únicos, **en cuotas** (ej. 15.000 × 3 meses, con «cuota n/N») y **fijos mensuales** (alquiler, servicios) con vencimiento propio o el último día del mes, monto variable y aumentos periódicos estimados (ej. +10 % cada 4 meses).
-9. Recuperar la contraseña con un link enviado por **email** (válido 30 minutos, de un solo uso).
-10. Revisar el **historial**: ingresos, gastos y ahorro por mes, filtrar por categoría y **comparar dos meses** (qué gastos subieron o bajaron, cuánto y en qué %, ahorro vs. el mes anterior y promedio).
-11. Ver **proyecciones** a 6–60 meses: cuánto va a tener ahorrado, cuándo termina de pagar las cuotas, aumentos estimados y el resultado en valores de hoy según la inflación estimada.
-12. Usar la **inflación oficial** de cada moneda (INDEC para pesos, IPC de EE.UU. para dólares), descargada sola todos los días: para proyectar en valores de hoy, para gastos e ingresos que **aumentan según inflación** y para ver el historial en **términos reales** (qué gastos subieron más que la inflación). Se puede cargar una inflación manual para los meses sin dato.
-13. Ver en el inicio un gráfico de ingresos y gastos **desde cualquier mes y durante N meses**, con el pasado real, el futuro proyectado y el día de hoy marcado.
-14. Crear, editar y eliminar **categorías** propias (ej. «Comida»); las eliminadas se conservan en el historial.
-15. Ver el **balance del mes** (ingresos, gastos, pendiente, vencido), los **próximos vencimientos** ordenados por fecha con días restantes, un gráfico de gastos por categoría y el gráfico pasado + proyección. Navegar a cualquier mes; los futuros se muestran como estimación.
+## Funcionalidades disponibles
 
-Cada persona solo puede acceder a su propia cuenta. El correo se conserva como identificador del perfil y no se edita desde la pantalla de configuración.
+- **Acceso y perfil:** registro, inicio de sesión con contraseña, Google opcional, renovación segura de sesión y recuperación por email. Perfil con nombre, idioma, moneda principal y zona horaria.
+- **Personalización:** español o inglés; tema claro, oscuro o del sistema; preferencias de avisos próximas a vencer, vencidos y del día, con canales email y navegador configurables. La entrega automática de esos avisos todavía está en preparación.
+- **Ingresos:** sueldos y otros ingresos fijos, extras puntuales o repetidos, cambios de monto y registro de cobros parciales por cuenta.
+- **Gastos:** gastos únicos, en cuotas o recurrentes; vencimientos, montos variables, categorías, tarjetas y reglas de aumento manuales o ligadas a inflación.
+- **Pagos:** pagos completos o parciales desde cuentas, tipos de cambio registrados, notas y comprobantes privados.
+- **Cuentas y patrimonio:** cuentas en pesos o dólares, transferencias, conciliaciones mediante ajustes, tarjetas y estimación del patrimonio.
+- **Vista mensual:** balance de ingresos, gastos, pagos y pendientes; vencimientos próximos; distribución por categorías y recorrido por meses pasados o futuros.
+- **Historial y análisis:** filtros y comparación de meses, cambios por categoría y medidas ajustadas por inflación.
+- **Proyecciones:** ingresos, cuotas y gastos esperados; escenarios nominales y en valores de hoy usando inflación oficial, estimada o manual.
+- **Cotizaciones:** tipos de cambio usados para conversiones y movimientos.
 
-## Recorrido principal
+## Beneficios e impacto potencial
 
-Una persona nueva entra, selecciona el idioma que prefiere y crea su cuenta o usa Google. Al ingresar carga su sueldo y sus gastos fijos y en cuotas, y desde **Inicio** ve el balance del mes, lo que vence primero y cómo vienen los próximos meses. En **Ajustes** para definir cómo quiere ver el producto: moneda (peso argentino o dólar), idioma, zona horaria y apariencia. Al cerrar sesión, su acceso queda finalizado en ese navegador.
+Saver puede aportar una vista más completa de la situación personal, reducir el esfuerzo de mantener varias listas, ayudar a anticipar meses con compromisos altos y dar señales sobre gastos que crecen más que los ingresos o la inflación. Para hogares, también puede servir como base compartida para coordinar pagos y objetivos. El impacto depende de la calidad de los datos y de cómo cada persona use la información.
 
-## Funciones que se están preparando
+## Recorrido habitual
 
-El menú muestra la dirección funcional del producto, pero las siguientes secciones aún no están activas:
+La persona crea una cuenta, define sus preferencias, carga ingresos y compromisos y usa Inicio para revisar el mes y las próximas obligaciones. Después puede registrar pagos y cobros desde sus cuentas, consultar el historial y explorar proyecciones para anticipar el efecto de cuotas, aumentos o inflación.
 
-| Próxima capacidad | Valor esperado para la persona usuaria |
-|---|---|
-| Pagos y comprobantes | Marcar gastos como pagados (también en partes), adjuntar facturas y cerrar el mes automáticamente. El botón «Pagar» ya está visible pero deshabilitado. |
-| Ahorro declarado | Registrar cuánto se separó para ahorrar cada mes. |
-| Inversiones | Simular escenarios y guardarlos. |
-| Informes | Compartir o descargar resúmenes en PDF, Excel o CSV. |
+## Capacidades futuras
 
-No se deben comunicar estas funciones como disponibles hasta que sus pantallas, API y reglas estén implementadas y probadas.
+| Capacidad | Valor esperado | Estado |
+|---|---|---|
+| Envío de avisos por email y notificaciones push | Recordar vencimientos en los canales elegidos | Preferencias disponibles; entrega por implementar |
+| Cierre de mes | Comparar una foto del resultado con lo proyectado | En planificación |
+| Presupuestos por categoría | Definir límites y reconocer desvíos | En planificación |
+| Importación de movimientos | Reducir carga manual y facilitar conciliación | En planificación |
+| Simulación de inversiones | Comparar escenarios de largo plazo | En planificación |
+| Informes descargables | Compartir o conservar resúmenes | En planificación |
 
-## Reglas de experiencia y privacidad
+Las funciones futuras no se deben anunciar como operativas hasta que estén implementadas de punta a punta.
 
-- La contraseña debe tener al menos 8 caracteres. Para evitar problemas de seguridad con caracteres multibyte, el servidor limita su tamaño a 72 bytes.
-- No se guardan contraseñas legibles: se guarda una representación segura de ellas.
-- La aplicación recuerda la sesión mediante un mecanismo protegido del navegador; la clave de acceso de corta duración no queda guardada de forma permanente en el navegador.
-- El idioma del perfil prevalece después de iniciar sesión. Antes de eso, se usa el idioma elegido o detectado en el navegador.
-- La moneda y la zona horaria son preferencias del perfil. Hoy no existen movimientos financieros a convertir ni cierres mensuales ejecutándose.
+## Privacidad y confianza
 
-## Indicadores sugeridos cuando avance el producto
+Cada persona accede solo a sus datos. Las contraseñas no se almacenan en texto legible; el access token permanece en memoria y la sesión persistente se gestiona con una cookie protegida. Los comprobantes se descargan con sesión, no mediante enlaces públicos. Las cantidades se almacenan con precisión decimal y las cotizaciones quedan asociadas a los movimientos que las usan.
 
-Para validar el valor de las próximas etapas conviene seguir: cuentas que completan su perfil, personas activas mensualmente, movimientos registrados por persona, porcentaje de meses cerrados, uso de proyecciones e informes exportados. Estos indicadores son recomendaciones de negocio, no métricas que el sistema actual ya recolecte.
+## Indicadores posibles
+
+Para evaluar el producto a futuro: perfiles completados, usuarios activos por mes, movimientos registrados, uso de proyecciones, pagos a tiempo y preferencias de notificación. Son indicadores sugeridos, no métricas actualmente recolectadas por la aplicación.

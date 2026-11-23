@@ -71,6 +71,22 @@ user_inflation        -- inflación manual del usuario por moneda (reemplaza a u
   user_id, currency, monthly_rate, updated_at   PK (user_id, currency)
 
 incomes += adjust_every_months?, adjust_percent?, adjust_with_inflation   -- regla de aumentos (V4)
+accounts              -- cuentas (V5): kind CHECKING | CASH | WALLET | SAVINGS | INVESTMENT
+  id, user_id, name, kind, currency, opening_balance, opening_date, color, archived_at
+cards                 -- tarjetas (solo agrupan gastos); expenses.card_id → cards
+  id, user_id, name, color, archived_at
+exchange_rates        -- cotizaciones por día y tipo (pesos por dólar)   PK (day, type)
+  day, type (OFICIAL | MEP | BLUE | TARJETA | CCL | MAYORISTA | CRIPTO), buy?, sell, source, fetched_at
+payments              -- pagos de ocurrencias; assumed = meses pasados (sin cuenta)
+  id, user_id, occurrence_id, account_id?, paid_on, amount, account_amount?, rate?, rate_type?, notes, assumed
+payment_attachments   -- comprobantes (el archivo está en el storage)
+  id, user_id, payment_id, storage_key, file_name, content_type, size_bytes
+income_receipts       -- cobros de ingresos por mes
+  id, user_id, income_id, month, account_id, received_on, amount, account_amount, rate?, rate_type?, notes
+transfers             -- entre cuentas propias (compra/venta de dólares si cambia la moneda)
+  id, user_id, from_account_id, to_account_id, transfer_on, from_amount, to_amount, rate?, rate_type?, notes
+account_adjustments   -- ajustes de saldo con signo
+  id, user_id, account_id, adjusted_on, amount, notes
 ```
 
 ## Conectarse a la base local

@@ -83,7 +83,7 @@ function MonthTab({ month, onMonth }: { month: MonthKey; onMonth: (m: MonthKey) 
             {view.occurrences.length === 0 ? (
               <EmptyState title={t('expenses.emptyMonth')} />
             ) : (
-              <OccurrenceList items={view.occurrences} />
+              <OccurrenceList items={view.occurrences} groupByCard />
             )}
           </Card>
         </>

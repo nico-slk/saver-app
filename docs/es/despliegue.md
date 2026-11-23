@@ -7,9 +7,11 @@ Esta guía propone un camino reproducible para el estado actual de Saver. Los co
 | Entorno | Frontend | API | Base de datos | Archivos |
 |---|---|---|---|---|
 | Local | Vite (`:5173`) | Spring Boot (`:8080`) | PostgreSQL Docker (`:5433`) | SeaweedFS Docker con API S3 (`:8333`) |
-| Producción recomendada | Firebase Hosting | Cloud Run (`southamerica-east1`) | Supabase PostgreSQL **o** Cloud SQL PostgreSQL | Servicio con API S3 a definir: Supabase Storage, R2, GCS interoperable o AWS S3 |
+| Producción para el demo | Firebase Hosting | Cloud Run (`southamerica-east1`) | Supabase PostgreSQL | Supabase Storage (API S3) |
 
 Se recomienda Firebase Hosting + Cloud Run con el rewrite ya presente en `frontend/firebase.json`: el navegador llama a `/api`, por lo que UI y API comparten origen. Así funciona `SameSite=Strict` y la cookie de refresh debe conservar el nombre `__session`; Firebase Hosting permite reenviar esa cookie a Cloud Run. [Firebase documenta esta restricción](https://firebase.google.com/docs/hosting/manage-cache?authuser=683989221).
+
+**Estado del proyecto actual:** `frontend/.firebaserc` apunta a `portfolio-slk2023` (Blaze). `frontend/firebase.json` ya reescribe `/api/**` hacia `saver-backend` en `southamerica-east1`; ese servicio todavía debe desplegarse y configurarse con PostgreSQL, storage y correo antes de que la app quede operativa.
 
 ## 2. Preparar y verificar localmente
 
@@ -154,8 +156,12 @@ gcloud run deploy saver-backend `
 
 ## 8. CI/CD, seguridad y siguiente etapa
 
+### Pendiente: habilitar Google Sign-In
+
+Google Sign-In queda deliberadamente deshabilitado durante esta primera puesta en marcha. Una vez verificados backend, Firebase Hosting, PostgreSQL, storage y correo, crear/configurar un Client ID OAuth web, agregar `https://saver-app-demo.web.app` como origen autorizado y desplegar una revisión con `GOOGLE_CLIENT_ID`. No guardar un client secret: este backend valida el ID token que entrega Google.
+
 - En cada PR: `npm ci && npm test && npm run build`, `mvn verify`, análisis de dependencias y revisión de migraciones.
 - En `main`: construir una imagen con SHA, desplegar mediante Workload Identity Federation (sin claves JSON permanentes), ejecutar smoke tests y recién entonces publicar Hosting.
 - Rotar JWT y contraseña de DB creando una nueva versión de secreto y desplegando una revisión que la fije; planificar el impacto de rotar JWT sobre sesiones existentes.
 - Configurar alertas por errores 5xx, salud no disponible, aumento de latencia y errores de conexión a DB. Respaldar PostgreSQL y ensayar restauración.
-- **Almacenamiento de comprobantes:** el backend ya tiene la interfaz `StorageService` y un adaptador S3. Para producción basta configurar `STORAGE_PROVIDER=s3-compatible` con el endpoint HTTPS del proveedor elegido (Supabase Storage, R2 o GCS con claves HMAC) o `STORAGE_PROVIDER=s3` para AWS, con `STORAGE_ENVIRONMENT=production` y las claves en Secret Manager. GCS nativo requiere implementar un adaptador. No exponer claves al frontend: las descargas usan URLs firmadas de corta duración.
+- **Almacenamiento de comprobantes:** para el demo se eligió Supabase Storage junto con Supabase PostgreSQL. El backend ya tiene un adaptador S3 compatible, así que basta configurar el endpoint y región S3 de Supabase, y guardar sus claves en Secret Manager. El bucket debe crearse manualmente y permanecer privado. Para migrar a AWS, el backend ya tiene adaptador S3; GCS nativo requiere implementar un adaptador. No exponer claves al frontend: las descargas usan URLs firmadas de corta duración.

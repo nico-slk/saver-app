@@ -14,7 +14,9 @@
     "settings": "Ajustes",
     "logout": "Cerrar sesión",
     "soon": "Pronto",
-    "comingSoon": "Próximamente"
+    "comingSoon": "Próximamente",
+    "accounts": "Cuentas",
+    "more": "Más"
   },
   "auth": {
     "loginTitle": "Iniciá sesión",
@@ -30,6 +32,8 @@
     "goLogin": "Iniciá sesión",
     "or": "o",
     "passwordHint": "Mínimo 8 caracteres",
+    "showPassword": "Mostrar",
+    "hidePassword": "Ocultar",
     "forgotLink": "¿Olvidaste tu contraseña?",
     "forgotTitle": "Recuperar contraseña",
     "forgotIntro": "Ingresá el email de tu cuenta y te enviamos un link para elegir una contraseña nueva.",
@@ -69,7 +73,22 @@
       "dark": "Oscuro"
     },
     "save": "Guardar",
-    "saved": "Cambios guardados"
+    "saved": "Cambios guardados",
+    "notifications": {
+      "sectionTitle": "Notificaciones",
+      "title": "Personalizar notificaciones",
+      "intro": "Elegí qué avisos querés recibir y por qué canales.",
+      "active": "Activa",
+      "inactive": "Inactiva",
+      "saved": "Preferencias de notificación guardadas",
+      "deliveryNote": "Las preferencias quedan guardadas en tu cuenta. La entrega por email y notificaciones del navegador se habilitará en una etapa posterior.",
+      "channels": { "emailEnabled": "Email", "pushEnabled": "Navegador (PC o móvil)" },
+      "kinds": {
+        "DUE_SOON": { "title": "Deuda próxima a vencer", "description": "Avisar antes de la fecha de vencimiento." },
+        "DUE_TODAY": { "title": "Deuda que vence hoy", "description": "Avisar el día del vencimiento." },
+        "OVERDUE": { "title": "Deuda vencida", "description": "Avisar si una deuda sigue pendiente después del vencimiento." }
+      }
+    }
   },
   "languages": {
     "es": "Español",
@@ -84,7 +103,8 @@
     "cancel": "Cancelar",
     "save": "Guardar",
     "edit": "Editar",
-    "delete": "Eliminar"
+    "delete": "Eliminar",
+    "add": "Agregar"
   },
   "errors": {
     "auth": {
@@ -112,7 +132,8 @@
       "positive": "Debe ser mayor a 0",
       "amount": "Monto inválido (máximo 2 decimales)",
       "min": "Valor demasiado bajo",
-      "max": "Valor demasiado alto"
+      "max": "Valor demasiado alto",
+      "color": "Color inválido"
     },
     "user": {
       "timezone": {
@@ -138,7 +159,8 @@
       "not_found": "El ingreso no existe",
       "end_before_start": "El fin no puede ser anterior al inicio",
       "amount_before_start": "El monto no puede regir antes del inicio",
-      "adjust_only_recurring": "Los aumentos solo aplican a ingresos que se repiten"
+      "adjust_only_recurring": "Los aumentos solo aplican a ingresos que se repiten",
+      "has_receipts": "El ingreso tiene cobros registrados: dalo de baja o borrá los cobros primero"
     },
     "expense": {
       "not_found": "El gasto no existe",
@@ -147,7 +169,8 @@
       "end_only_recurring": "Solo los gastos fijos mensuales se dan de baja",
       "end_before_start": "El fin no puede ser anterior al inicio",
       "amount_before_start": "El monto no puede regir antes del inicio",
-      "has_payments": "Tiene pagos registrados: usá «Dar de baja» en lugar de eliminar"
+      "has_payments": "Tiene pagos registrados: usá «Dar de baja» en lugar de eliminar",
+      "past_months_choice_required": "Indicá si los meses anteriores ya están pagos"
     },
     "occurrence": {
       "not_found": "El gasto del mes no existe"
@@ -169,6 +192,42 @@
     "timeline": {
       "invalid_months": "Elegí entre 1 y 120 meses",
       "invalid_from": "El mes de inicio está demasiado lejos"
+    },
+    "account": {
+      "not_found": "La cuenta no existe",
+      "archived": "La cuenta está archivada",
+      "has_movements": "La cuenta tiene movimientos: archivala en lugar de eliminarla",
+      "adjustment_zero": "El saldo real es igual al actual",
+      "adjustment_required": "Indicá el saldo real"
+    },
+    "transfer": {
+      "same_account": "Elegí dos cuentas distintas",
+      "not_found": "La transferencia no existe"
+    },
+    "adjustment": {
+      "not_found": "El ajuste no existe"
+    },
+    "card": {
+      "not_found": "La tarjeta no existe o está archivada"
+    },
+    "payment": {
+      "not_found": "El pago no existe"
+    },
+    "receipt": {
+      "not_found": "El cobro no existe",
+      "month_inactive": "El ingreso no corresponde a ese mes"
+    },
+    "exchange": {
+      "rate_required": "No hay cotización del dólar guardada: cargala a mano",
+      "invalid_rate": "Cotización inválida"
+    },
+    "attachment": {
+      "invalid_type": "Solo se aceptan PDF, PNG, JPEG o WEBP",
+      "too_large": "Cada archivo puede pesar hasta 10 MB",
+      "too_many": "Máximo 10 comprobantes por pago",
+      "required": "Elegí al menos un archivo",
+      "unreadable": "No se pudo leer el archivo",
+      "not_found": "El comprobante no existe"
     }
   },
   "categories": {
@@ -235,7 +294,6 @@
     "installmentOf": "Cuota {{n}}/{{total}}",
     "variable": "Monto variable",
     "pay": "Pagar",
-    "payComingSoon": "El registro de pagos con comprobantes llega en la próxima etapa",
     "editOccurrence": "Editar «{{name}}» de este mes",
     "editOccurrenceHint": "Cambia solo este mes (ej. el monto real de la factura o una fecha de vencimiento distinta).",
     "fields": {
@@ -291,7 +349,14 @@
     "endHint": "El gasto deja de aparecer después del mes elegido.",
     "deleteTitle": "Eliminar gasto",
     "deleteMessage": "¿Eliminar «{{name}}» y todas sus cuotas o meses? Para conservar el historial usá «Dar de baja».",
-    "nextAdjustmentInflation": "Próximo aumento: {{month}} (según inflación)"
+    "nextAdjustmentInflation": "Próximo aumento: {{month}} (según inflación)",
+    "pastMonths": {
+      "question_one": "Empieza el mes pasado. ¿Ese mes ya está pago?",
+      "question_other": "Empieza hace {{count}} meses. ¿Los meses anteriores ya están pagos?",
+      "hint": "Si ya los pagaste se marcan como pagados (sin cuenta ni comprobante) y no aparecen como vencidos.",
+      "yes": "Sí, ya están pagos",
+      "no": "No, quedan pendientes (aparecen como vencidos)"
+    }
   },
   "incomes": {
     "new": "Nuevo ingreso",
@@ -512,5 +577,154 @@
       "CURRENT": "mes actual",
       "FUTURE": "proyectado"
     }
+  },
+  "accounts": {
+    "intro": "Dónde está tu plata: bancos, billeteras, efectivo, ahorro e inversiones. Los pagos salen de una cuenta y los cobros entran a una.",
+    "new": "Nueva cuenta",
+    "newTitle": "Nueva cuenta",
+    "editTitle": "Editar cuenta",
+    "create": "Crear una cuenta",
+    "empty": "Todavía no cargaste cuentas. Creá al menos una para registrar pagos y cobros.",
+    "noneYet": "Para registrar movimientos necesitás una cuenta.",
+    "netWorth": "Patrimonio",
+    "allAccounts": "Todas las cuentas activas",
+    "valuedAt": "Dólares valuados a {{type}} ({{rate}})",
+    "noRate": "Falta la cotización del dólar para sumar ambas monedas",
+    "savingsTotal": "Ahorro e inversiones",
+    "savingsHint": "Cuentas de tipo ahorro o inversión",
+    "inCurrency": "En {{currency}}",
+    "ofWhichSavings": "Ahorro: {{amount}}",
+    "openingInfo": "Saldo inicial {{amount}} al {{date}}",
+    "openingHint": "Lo que hay hoy en la cuenta. Los movimientos anteriores a esa fecha no cambian el saldo.",
+    "movements": "Movimientos",
+    "hideMovements": "Ocultar movimientos",
+    "noMovements": "Sin movimientos todavía.",
+    "beforeOpening": "anterior al saldo inicial, no cuenta",
+    "undo": "Deshacer",
+    "adjust": "Ajustar saldo",
+    "adjustTitle": "Ajustar saldo de {{name}}",
+    "adjustHint": "Saldo según Saver: {{amount}}. Cargá el saldo real y se registra la diferencia (intereses, comisiones, gastos sin cargar).",
+    "realBalance": "Saldo real ({{currency}})",
+    "adjustDiff": "Diferencia: {{amount}}",
+    "adjustPlaceholder": "Ej.: intereses del mes",
+    "archive": "Archivar",
+    "unarchive": "Reactivar",
+    "archived": "Archivada",
+    "archivedCount_one": "Ver {{count}} cuenta archivada",
+    "archivedCount_other": "Ver {{count}} cuentas archivadas",
+    "deleteTitle": "Eliminar cuenta",
+    "deleteMessage": "¿Eliminar «{{name}}»? Solo se puede si no tiene movimientos.",
+    "cannotDelete": "La cuenta tiene movimientos: archivala para ocultarla sin perder el historial.",
+    "transfer": "Transferir",
+    "transferTitle": "Transferir entre cuentas",
+    "transferHint": "Entre cuentas en distinta moneda es una compra o venta de dólares (dólar MEP o la cotización que indiques).",
+    "from": "Desde",
+    "to": "Hacia",
+    "amountIn": "Monto ({{currency}})",
+    "namePlaceholder": "Ej.: Galicia, Mercado Pago, Dólares",
+    "fields": {
+      "name": "Nombre",
+      "kind": "Tipo",
+      "openingBalance": "Saldo actual",
+      "openingDate": "Al día",
+      "color": "Color"
+    },
+    "kind": {
+      "CHECKING": "Cuenta bancaria",
+      "CASH": "Efectivo",
+      "WALLET": "Billetera virtual",
+      "SAVINGS": "Ahorro",
+      "INVESTMENT": "Inversión"
+    },
+    "kindHint": {
+      "CHECKING": "Caja de ahorro o cuenta corriente de uso diario.",
+      "CASH": "La plata en mano.",
+      "WALLET": "Mercado Pago, Ualá, Naranja X…",
+      "SAVINGS": "Lo que separás para ahorrar (ej. dólares). Cuenta como ahorro.",
+      "INVESTMENT": "Plazo fijo, FCI, acciones, cripto. Cuenta como ahorro."
+    },
+    "movement": {
+      "PAYMENT": "Pago: {{name}}",
+      "RECEIPT": "Cobro: {{name}}",
+      "TRANSFER_IN": "Transferencia desde {{name}}",
+      "TRANSFER_OUT": "Transferencia a {{name}}",
+      "ADJUSTMENT": "Ajuste de saldo {{name}}"
+    }
+  },
+  "cards": {
+    "title": "Tarjetas",
+    "intro": "Sirven para agrupar los gastos que pagás con cada tarjeta. Cada cuota se sigue pagando por separado.",
+    "new": "Nueva tarjeta",
+    "placeholder": "Ej.: Visa Galicia",
+    "field": "Tarjeta",
+    "none": "Sin tarjeta",
+    "items_one": "{{count}} gasto",
+    "items_other": "{{count}} gastos",
+    "pending": "Pendiente: {{amount}}"
+  },
+  "rates": {
+    "title": "Cotizaciones del dólar",
+    "intro": "Se actualizan solas desde dolarapi.com. Cada pago guarda la cotización usada.",
+    "none": "Todavía no hay cotizaciones (se descargan cuando hay internet). Mientras tanto podés cargar la cotización a mano en cada pago.",
+    "buy": "Compra",
+    "sell": "Venta",
+    "updated": "Actualizado: {{date}}",
+    "type": {
+      "label": "Dólar",
+      "OFICIAL": "Oficial",
+      "MEP": "MEP",
+      "BLUE": "Blue",
+      "TARJETA": "Tarjeta",
+      "CCL": "CCL",
+      "MAYORISTA": "Mayorista",
+      "CRIPTO": "Cripto",
+      "MANUAL": "cotización manual"
+    },
+    "use": {
+      "OFICIAL": "Gastos en USD sin tarjeta y cobros en USD",
+      "MEP": "Comprar/vender dólares y valuar tu patrimonio",
+      "TARJETA": "Gastos en USD pagados con tarjeta",
+      "BLUE": "Referencia",
+      "CCL": "Referencia"
+    }
+  },
+  "payments": {
+    "title": "Pagar {{name}} · {{month}}",
+    "view": "Pagos",
+    "expected": "Previsto",
+    "paid": "Pagado",
+    "remaining": "Falta",
+    "withCard": "Se paga con {{card}}: si la cuenta es en pesos se usa el dólar tarjeta.",
+    "history": "Pagos registrados",
+    "new": "Nuevo pago",
+    "fromAccount": "Desde la cuenta",
+    "fromAccountShort": "Desde {{account}}",
+    "assumed": "Marcado como pagado al cargar el gasto (sin cuenta)",
+    "amount": "Monto ({{currency}})",
+    "date": "Fecha",
+    "notes": "Observaciones",
+    "files": "Comprobantes",
+    "filesHint": "PDF, PNG, JPEG o WEBP. Hasta {{max}} archivos de 10 MB.",
+    "tooManyFiles": "Máximo {{max}} archivos por pago.",
+    "removeFile": "Quitar {{name}}",
+    "submit": "Registrar pago",
+    "deleteTitle": "Eliminar pago",
+    "deleteMessage": "¿Eliminar el pago de {{amount}}? También se borran sus comprobantes y vuelve el saldo a la cuenta.",
+    "conversionOut": "Sale de la cuenta: {{amount}}",
+    "conversionIn": "Entra a la cuenta: {{amount}}",
+    "conversionRate": "(dólar {{type}}: {{rate}})",
+    "manualRate": "Otra cotización (opcional)",
+    "rateMissing": "No hay cotización guardada: cargala a mano.",
+    "attach": "Adjuntar",
+    "uploadFailed": "El pago se registró, pero no se pudieron subir los comprobantes ({{reason}}). Podés adjuntarlos desde el pago."
+  },
+  "receipts": {
+    "receive": "Cobrar",
+    "title": "Cobrar {{name}} · {{month}}",
+    "summary": "Cobrado {{received}} de {{expected}}.",
+    "toAccount": "A la cuenta",
+    "submit": "Registrar cobro",
+    "done": "Cobrado este mes",
+    "thisMonth": "Este mes: cobrado {{received}} de {{expected}}"
   }
 }

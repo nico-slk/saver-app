@@ -12,5 +12,7 @@ export function useFinanceInvalidation() {
       qc.invalidateQueries({ queryKey: ['history'] }),
       qc.invalidateQueries({ queryKey: ['projections'] }),
       qc.invalidateQueries({ queryKey: ['timeline'] }),
+      qc.invalidateQueries({ queryKey: ['accounts'] }),
+      qc.invalidateQueries({ queryKey: ['payments'] }),
     ]);
 }

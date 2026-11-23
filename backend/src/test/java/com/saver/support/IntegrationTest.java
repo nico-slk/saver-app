@@ -62,6 +62,7 @@ public abstract class IntegrationTest {
         registry.add("spring.datasource.password", () -> PASSWORD);
         registry.add("app.storage.environment", () -> "test");
         registry.add("app.inflation.enabled", () -> "false");
+        registry.add("app.exchange.enabled", () -> "false");
     }
 
     private static boolean ensureDatabase() {

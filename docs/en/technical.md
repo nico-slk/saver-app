@@ -13,16 +13,16 @@ Browser
                                                     └─ Google Identity (optional)
 ```
 
-The frontend provides the interface. The backend exposes a REST API, applies authentication, and stores profiles and sessions. PostgreSQL stores data. Locally Docker Compose starts PostgreSQL and SeaweedFS (S3-API object storage); the backend runs with Maven or IntelliJ. The `storage` package exposes the `StorageService` interface with an S3 adapter, but no receipt endpoints consume it yet.
+The frontend provides the interface. The backend exposes a REST API, enforces authentication and domain rules, and stores financial data, preferences, and sessions in PostgreSQL. Locally Docker Compose starts PostgreSQL, SeaweedFS (S3 API), and Mailpit. The backend runs with Maven or IntelliJ. Receipts use `StorageService` and are served through authenticated requests.
 
 ## Components and responsibilities
 
 | Area | Technology | Current responsibility |
 |---|---|---|
 | `frontend/` | React 19, TypeScript, Vite, Tailwind | Routes, forms, visual preferences, ES/EN text, and API calls. |
-| Client state | Zustand + TanStack Query | Zustand holds session/theme; TanStack Query fetches sign-in providers. |
+| Client state | Zustand + TanStack Query | Zustand holds session/theme; TanStack Query manages server data. |
 | `backend/` | Java 21, Spring Boot 3.5 | REST API, validation, security, account and profile rules. |
-| Data | PostgreSQL 16, JPA, Flyway | `users` and `refresh_tokens` tables; versioned migrations. |
+| Data | PostgreSQL 16, JPA, Flyway | Profile, finance, account, movement, file, and preference data; versioned migrations. |
 | Access | HS256 JWT, BCrypt, HttpOnly cookie | Short-lived access token in memory; rotated opaque refresh token in a cookie. |
 | External identity | Google Identity Services / Google JWKS | Validates client ID tokens when `GOOGLE_CLIENT_ID` is set. |
 | Operations | Docker, Cloud Run, Firebase Hosting | Backend image and SPA delivery. |
@@ -32,6 +32,7 @@ The frontend provides the interface. The backend exposes a REST API, applies aut
 ```text
 frontend/src/
   features/auth/      screens and authentication client
+  features/notifications/ notification preferences
   stores/             session and local preferences
   lib/api.ts          Axios, language and token renewal
   pages/              dashboard and settings
@@ -69,18 +70,23 @@ The frontend reads `GET /api/auth/providers` and only renders Google access when
 | `POST /api/auth/register`, `/login`, `/google` | No | Start a session. |
 | `POST /api/auth/refresh`, `/logout` | Cookie | Renew or end a session. |
 | `GET/PATCH /api/me` | JWT | Read/update profile. |
+| `GET/PUT /api/notifications/preferences` | JWT | Read/save personal alert and channel preferences; delivery is not active yet. |
+| `GET/PUT /api/notifications/preferences` | JWT | Read and save alert/channel preferences; delivery is not active yet. |
 | `/api/categories`, `/api/incomes`, `/api/expenses`, `/api/occurrences/{id}` | JWT | Categories, income, expense templates and one-month adjustments (see `backend/docs/en/api.md`). |
 | `GET /api/months/{YYYY-MM\|current}` | JWT | Month balance, due dates, overdue items and projected future months. |
 | `GET /api/history`, `GET /api/history/compare` | JWT | Monthly history and month comparison. |
 | `GET /api/projections` | JWT | N-month projection, nominal and in today's money. |
 | `GET /api/inflation`, `PUT/DELETE /api/inflation/{currency}/manual` | JWT | Official inflation per currency (daily download: ArgentinaDatos/INDEC and BLS), estimate and manual rate. |
 | `GET /api/timeline` | JWT | Past + projection series for the Home chart. |
+| `/api/accounts`, `/api/transfers`, `/api/cards` | JWT | Accounts, balances, net worth, transfers, adjustments and cards. |
+| `/api/occurrences/{id}/payments`, `/api/payments/{id}/attachments`, `/api/incomes/{id}/receipts` | JWT | Partial payments with receipts (storage) and income receipts. |
+| `GET /api/exchange-rates` | JWT | Dollar rates (dolarapi) and per-use conversion. |
 | `POST /api/auth/password/forgot`, `/reset` | No | Password recovery by email (Mailpit locally, free Brevo for real sending). |
 
 Health is at `/actuator/health`, Swagger at `/swagger-ui.html`, and OpenAPI at `/v3/api-docs`.
 
 ## Data, integrations and safeguards
 
-Flyway runs `backend/src/main/resources/db/migration` on startup; Hibernate only validates the schema. Add a new `V{n}__description.sql` for every data change—never modify an applied migration. Firebase Hosting forwards `/api/**` to Cloud Run, preserving same-origin behavior. Firebase forwards only the `__session` cookie to Cloud Run. Vite proxies `/api` locally. `StorageService` (port) + `S3StorageService` (adapter) use server-generated UUID keys, size limits and signed URLs of up to 1 hour; the provider is chosen with `STORAGE_PROVIDER` (`s3-compatible` for SeaweedFS/Supabase/R2/interoperable GCS, `s3` for AWS). Receipt endpoints and metadata do not yet exist. The daily refresh-token cleanup needs distributed locking or Cloud Scheduler before multi-instance business jobs are added.
+Flyway runs `backend/src/main/resources/db/migration` on startup; Hibernate only validates the schema. Add a new `V{n}__description.sql` for every data change—never modify an applied migration. Firebase Hosting forwards `/api/**` to Cloud Run, preserving same-origin behavior. Firebase forwards only the `__session` cookie to Cloud Run. Vite proxies `/api` locally. `StorageService` (port) + `S3StorageService` (adapter) use server-generated UUID keys, size limits and signed URLs of up to 1 hour; the provider is chosen with `STORAGE_PROVIDER` (`s3-compatible` for SeaweedFS/Supabase/R2/interoperable GCS, `s3` for AWS). Receipt endpoints require an authenticated session and verify ownership. The daily refresh-token cleanup needs distributed locking or Cloud Scheduler before multi-instance business jobs are added.
 
 Validate frontend work with `npm run typecheck`, `npm test`, and `npm run build`; validate backend work with `mvn test` or `mvn verify`. Do not put secrets in `VITE_*`, source control, or images; keep local `.env` files untracked.

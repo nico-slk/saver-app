@@ -1,36 +1,23 @@
 #!/bin/bash
-# Levanta todo el entorno de desarrollo: Docker (Postgres + SeaweedFS), backend y frontend.
-# Uso (desde la raíz del repo, en Git Bash): ./run.sh   — Ctrl+C detiene backend y frontend.
+# Levanta el entorno de desarrollo SIN el backend: Docker (Postgres, SeaweedFS, Mailpit) y el frontend.
+# El backend se levanta aparte (IntelliJ o `mvn spring-boot:run` en la carpeta backend; lee backend/.env).
+# Uso (desde la raíz del repo, en Git Bash): ./run.sh   — Ctrl+C detiene el frontend (los contenedores siguen).
 
 # Terminar todo el script si algún comando falla
 set -e
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
-BACKEND_PID=""
 
-# Al salir (Ctrl+C o error) se detiene también Spring Boot.
-# Se registra ANTES de lanzar los procesos para que siempre se ejecute.
-cleanup() {
-  if [ -n "$BACKEND_PID" ] && kill -0 "$BACKEND_PID" 2>/dev/null; then
-    echo "🛑 Deteniendo Spring Boot..."
-    kill "$BACKEND_PID" 2>/dev/null || true
-  fi
-}
-trap cleanup EXIT INT TERM
+echo "🚀 Iniciando el entorno de desarrollo (sin backend)..."
 
-echo "🚀 Iniciando el entorno de desarrollo..."
-
-# 1. Infraestructura: Postgres (puerto DB_PORT del backend/.env, 5433 por defecto) y SeaweedFS (8333)
-echo "🐳 Iniciando contenedores de Docker (base de datos y almacenamiento)..."
+# 1. Infraestructura: Postgres (DB_PORT del backend/.env, 5433 por defecto), SeaweedFS (8333) y Mailpit (8025)
+echo "🐳 Iniciando contenedores de Docker (base de datos, almacenamiento y emails)..."
 cd "$ROOT/backend"
 docker compose up -d
 
-# 2. Backend con Spring Boot (en segundo plano; lee backend/.env)
-echo "☕ Iniciando backend con Spring Boot..."
-mvn spring-boot:run &
-BACKEND_PID=$!
+echo "☕ Backend: levantalo vos (IntelliJ o 'mvn spring-boot:run' en backend/). Debe quedar en http://localhost:8080"
 
-# 3. Frontend con React y Vite (Vite reintenta el proxy /api mientras el backend termina de arrancar)
+# 2. Frontend con React y Vite (el proxy /api apunta a http://localhost:8080 y reintenta hasta que el backend responda)
 echo "⚡ Iniciando frontend con Vite..."
 cd "$ROOT/frontend"
 npm install

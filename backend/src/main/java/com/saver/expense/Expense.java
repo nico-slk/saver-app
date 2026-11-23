@@ -74,6 +74,10 @@ public class Expense extends BaseEntity {
     @Column(length = 500)
     private String notes;
 
+    /** Tarjeta con la que se paga (solo agrupa). */
+    @Column(name = "card_id")
+    private UUID cardId;
+
     @OneToMany(mappedBy = "expense", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("effectiveMonth ASC")
     private List<ExpenseAmount> amounts = new ArrayList<>();
@@ -168,6 +172,8 @@ public class Expense extends BaseEntity {
         this.adjustPercent = percent;
         this.adjustWithInflation = withInflation;
     }
+    public UUID getCardId() { return cardId; }
+    public void setCardId(UUID cardId) { this.cardId = cardId; }
     public String getNotes() { return notes; }
     public void setNotes(String notes) { this.notes = notes; }
     public List<ExpenseAmount> getAmounts() { return amounts; }

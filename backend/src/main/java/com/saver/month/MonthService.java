@@ -4,6 +4,7 @@ import com.saver.common.Money;
 import com.saver.expense.ExpenseDtos.OccurrenceResponse;
 import com.saver.expense.OccurrenceService;
 import com.saver.income.Income;
+import com.saver.income.IncomeReceiptService;
 import com.saver.income.IncomeService;
 import com.saver.month.MonthDtos.CategoryTotal;
 import com.saver.month.MonthDtos.CurrencyTotals;
@@ -32,8 +33,11 @@ public class MonthService {
     private final OccurrenceService occurrences;
     private final UserTime time;
     private final InflationService inflation;
+    private final IncomeReceiptService receipts;
 
-    public MonthService(IncomeService incomes, OccurrenceService occurrences, UserTime time, InflationService inflation) {
+    public MonthService(IncomeService incomes, OccurrenceService occurrences, UserTime time, InflationService inflation,
+                        IncomeReceiptService receipts) {
+        this.receipts = receipts;
         this.incomes = incomes;
         this.occurrences = occurrences;
         this.time = time;
@@ -60,11 +64,13 @@ public class MonthService {
             }
         }
 
+        Map<UUID, BigDecimal> received = projected ? Map.of() : receipts.receivedIn(userId, month);
         List<MonthIncome> monthIncomes = new ArrayList<>();
         for (Income i : incomes.list(userId)) {
             if (!i.activeIn(month)) continue;
             (projected ? i.estimatedAmount(month, curves.of(i.getCurrency())) : i.amountFor(month)).ifPresent(amount -> monthIncomes.add(new MonthIncome(i.getId(), i.getDescription(),
-                    i.getKind(), i.getCurrency(), amount, !i.getStartMonth().equals(i.getEndMonth()))));
+                    i.getKind(), i.getCurrency(), amount, i.isRecurring(),
+                    received.getOrDefault(i.getId(), Money.ZERO))));
         }
         monthIncomes.sort(Comparator.comparing(MonthIncome::kind).thenComparing(MonthIncome::description));
 

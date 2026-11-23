@@ -10,7 +10,8 @@ import { fieldErrors, translateError } from '@/lib/errors';
 import { formatMoney, type Currency } from '@/lib/format';
 import { formatMonth, monthKey } from '@/lib/month';
 import { useAuthStore } from '@/stores/authStore';
-import { queryKeys } from '@/features/months/monthsApi';
+import { monthsApi, queryKeys } from '@/features/months/monthsApi';
+import { ReceiveDialog } from './ReceiveDialog';
 import { useFinanceInvalidation } from '@/features/months/useFinanceInvalidation';
 import { incomesApi, type Income, type IncomeKind } from './incomesApi';
 
@@ -22,6 +23,9 @@ export function IncomesPage() {
   const [raising, setRaising] = useState<Income | null>(null);
   const [ending, setEnding] = useState<Income | null>(null);
   const [adjusting, setAdjusting] = useState<Income | null>(null);
+  const [receiving, setReceiving] = useState<{ income: Income; expected: number } | null>(null);
+  const month = useQuery({ queryKey: queryKeys.month('current'), queryFn: () => monthsApi.get('current') });
+  const thisMonth = (id: string) => month.data?.incomes.find((x) => x.incomeId === id);
   const ruleSummary = useAdjustmentSummary();
   const [deleting, setDeleting] = useState<Income | null>(null);
   const remove = useMutation({
@@ -73,12 +77,26 @@ export function IncomesPage() {
                   </div>
                   <p className="mt-1 text-xs text-slate-500">{describe(i)}</p>
                   {i.recurring && !ended(i) && ruleSummary(i) && <p className="text-xs text-slate-500">{ruleSummary(i)}</p>}
+                  {thisMonth(i.id) && (
+                    <p className="mt-1 text-xs">
+                      {thisMonth(i.id)!.received >= thisMonth(i.id)!.amount
+                        ? <Badge tone="success">{t('receipts.done')}</Badge>
+                        : <span className="text-slate-500">{t('receipts.thisMonth', {
+                            received: formatMoney(thisMonth(i.id)!.received, i.currency),
+                            expected: formatMoney(thisMonth(i.id)!.amount, i.currency) })}</span>}
+                    </p>
+                  )}
                 </div>
                 <div className="flex items-center justify-between gap-2 sm:justify-end">
                   <span className="font-semibold tabular-nums">
                     {i.currentAmount != null ? formatMoney(i.currentAmount, i.currency) : '—'}
                   </span>
                   <div className="flex flex-wrap justify-end gap-1">
+                    {thisMonth(i.id) && (
+                      <Button variant="secondary" className="px-3 py-1 text-xs" onClick={() => setReceiving({ income: i, expected: thisMonth(i.id)!.amount })}>
+                        {t('receipts.receive')}
+                      </Button>
+                    )}
                     {i.recurring && !ended(i) && (
                       <Button variant="ghost" className="px-2 py-1 text-xs" onClick={() => setRaising(i)}>{t('incomes.changeAmount')}</Button>
                     )}
@@ -115,6 +133,9 @@ export function IncomesPage() {
           onSubmit={(endMonth) => incomesApi.update(ending.id, { endMonth })}
           onClose={() => setEnding(null)}
         />
+      )}
+      {receiving && month.data && (
+        <ReceiveDialog income={receiving.income} month={month.data.currentMonth} expected={receiving.expected} onClose={() => setReceiving(null)} />
       )}
       {adjusting && <IncomeAdjustmentDialog income={adjusting} onClose={() => setAdjusting(null)} />}
       <ConfirmDialog

@@ -1,54 +1,49 @@
-# Saver: business documentation
+# Saver: product overview
 
-## Purpose
+## Purpose and everyday problem
 
-Saver is a web application intended to help people organize their financial life in one place. Its product goal is to make income, expenses, savings and investments easier to understand and use for decisions. The solution is being delivered in stages: it currently provides a secure, personalized access foundation for the future financial tools.
+Saver aims to help people organize their finances and make everyday decisions with clearer information. In daily life, bills, installments, income, and due dates are scattered across apps, spreadsheets, and reminders. This makes it difficult to understand the month's actual balance, anticipate expenses, and know how much flexibility remains.
 
-## What a person can do today
+The app brings income, expenses, and accounts together; connects due dates with payments; keeps history; and projects future months. This can help reduce missed payments, spot spending patterns, plan commitments, and have clearer conversations about savings and priorities. Its value grows when records stay up to date. Projections are estimates, not financial advice.
 
-1. Create an account with a name, email address and password.
-2. Sign in and sign out with email and password.
-3. Sign in with Google when an administrator has enabled that option.
-4. Safely restore their session when returning to the app.
-5. View and update their profile: name, language, primary currency and time zone.
-6. Use Spanish or English and choose a light, dark, or system theme.
-7. Record **income**: fixed (salary), one-month extras or extras repeating for N months or indefinitely, and record raises from a given month.
-8. Record **expenses**: one-off, **installments** (e.g. 15,000 × 3 months, labeled “installment n/N”) and **monthly fixed** (rent, utilities) with their own due day or the last day of the month, variable amounts and estimated periodic increases (e.g. +10% every 4 months).
-9. Recover their password with a link sent by **email** (valid 30 minutes, single use).
-10. Review **history**: income, expenses and savings per month, filter by category and **compare two months** (which expenses went up or down, by how much and %, savings vs. previous month and average).
-11. See **projections** for 6–60 months: how much they will have saved, when installments end, estimated increases and the result in today's money using estimated inflation.
-12. Use each currency's **official inflation** (INDEC for pesos, US CPI for dollars), downloaded automatically every day: to project in today's money, for expenses and income that **increase with inflation** and to see history **in real terms** (which expenses rose more than inflation). A manual rate can be set for months without data.
-13. See on Home a chart of income and expenses **from any month for N months**, with the actual past, the projected future and today marked.
-14. Create, edit and delete their own **categories** (e.g. “Food”); deleted ones are kept in history.
-15. See the **month balance** (income, expenses, pending, overdue), **upcoming due dates** sorted by date with days left, an expenses-by-category chart and the past + projection chart. Browse any month; future months are shown as estimates.
+## Available capabilities
 
-Each person can access only their own account. Email identifies the profile and cannot be changed from settings.
+- **Access and profile:** sign up, password sign-in, optional Google sign-in, secure session renewal, and email password recovery. Profile settings include name, language, primary currency, and time zone.
+- **Personalization:** English or Spanish; light, dark, or system theme; preferences for upcoming, due-today, and overdue alerts with configurable email and browser channels. Automatic delivery is still being prepared.
+- **Income:** salary and other recurring income, one-off or repeating extras, amount changes, and partial receipts into accounts.
+- **Expenses:** one-time, installment, and recurring expenses; due dates, variable amounts, categories, cards, and manual or inflation-linked adjustment rules.
+- **Payments:** full or partial payments from accounts, recorded exchange rates, notes, and private receipts.
+- **Accounts and net worth:** peso or dollar accounts, transfers, balance reconciliation, cards, and estimated net worth.
+- **Monthly view:** income, expenses, paid and pending balances; upcoming due dates; category breakdown; and navigation through past or future months.
+- **History and analysis:** filters and month comparisons, category changes, and inflation-adjusted measures.
+- **Projections:** expected income, installments, and expenses; nominal and today's-money scenarios using official, estimated, or manual inflation.
+- **Exchange rates:** rates used for conversions and movements.
 
-## Main journey
+## Potential benefits and impact
 
-A new person selects a language, creates an account or uses Google, then enters their salary and fixed and installment expenses; **Home** shows the month balance, what is due first and how the next months look. In **Settings**, they choose how the product should work for them: currency (Argentine peso or US dollar), language, time zone and appearance. Signing out ends their access in that browser.
+Saver can provide a more complete view of personal finances, reduce the effort of maintaining separate lists, help anticipate months with heavier commitments, and reveal expenses growing faster than income or inflation. For households, it can also support coordination around bills and goals. Impact depends on data quality and how each person uses the information.
 
-## Capabilities being prepared
+## Typical journey
 
-The menu communicates the product direction, but these areas are not yet active:
+A person creates an account, sets preferences, records income and commitments, and uses Home to review the month and upcoming obligations. They can then record payments and receipts from their accounts, review history, and explore projections to anticipate the effect of installments, raises, or inflation.
 
-| Planned capability | Expected value |
-|---|---|
-| Payments and receipts | Mark expenses as paid (also partially), attach invoices and close months automatically. The “Pay” button is already visible but disabled. |
-| Declared savings | Record how much was set aside each month. |
-| Investments | Simulate and save scenarios. |
-| Reports | Download or share PDF, Excel, or CSV summaries. |
+## Future capabilities
 
-These must not be presented as available until their screens, API, and business rules are implemented and tested.
+| Capability | Expected value | Status |
+|---|---|---|
+| Email alerts and push notifications | Remind about due dates through chosen channels | Preferences available; delivery pending |
+| Month closing | Compare a snapshot of results with projections | Planned |
+| Category budgets | Set limits and identify overspending | Planned |
+| Movement imports | Reduce manual entry and support reconciliation | Planned |
+| Investment simulations | Compare long-term scenarios | Planned |
+| Downloadable reports | Share or keep summaries | Planned |
 
-## Experience and privacy rules
+Future capabilities should not be described as operational until implemented end to end.
 
-- Passwords must have at least 8 characters; the server limits them to 72 bytes for security compatibility.
-- Readable passwords are never stored; a secure representation is stored instead.
-- The app restores sessions through a protected browser mechanism; the short-lived access credential is not persistently stored in the browser.
-- The profile language takes precedence after sign-in. Before that, the selected or browser-detected language is used.
-- Currency and time zone are profile preferences. The current release has no financial movements to convert and no monthly close process.
+## Privacy and trust
 
-## Suggested future product indicators
+Each person can access only their own data. Passwords are never stored as readable text; the access token stays in memory and persistent sessions use a protected cookie. Receipts require an authenticated session and are not exposed through public links. Amounts use decimal precision, and exchange rates are stored with the movements that use them.
 
-As financial features arrive, track profile completion, monthly active people, movements per person, monthly-close completion, projection use, and exported reports. These are business recommendations, not metrics collected by the current implementation.
+## Possible indicators
+
+Future product measures could include completed profiles, monthly active users, recorded movements, projection usage, on-time payments, and notification preferences. These are suggestions, not metrics currently collected by the app.

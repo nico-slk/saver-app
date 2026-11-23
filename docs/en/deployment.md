@@ -7,9 +7,11 @@ This is the reproducible operating path for the current Saver release. Replace `
 | Environment | Frontend | API | Database | Files |
 |---|---|---|---|---|
 | Local | Vite (`:5173`) | Spring Boot (`:8080`) | Docker PostgreSQL (`:5433`) | Docker SeaweedFS with S3 API (`:8333`) |
-| Recommended production | Firebase Hosting | Cloud Run (`southamerica-east1`) | Supabase PostgreSQL **or** Cloud SQL PostgreSQL | S3-API service to be decided: Supabase Storage, R2, interoperable GCS or AWS S3 |
+| Demo production | Firebase Hosting | Cloud Run (`southamerica-east1`) | Supabase PostgreSQL | Supabase Storage (S3 API) |
 
 Firebase Hosting rewrites `/api/**` to Cloud Run, keeping the app same-origin. Keep the refresh cookie named `__session`: Hosting forwards that special cookie to Cloud Run. [Firebase documentation](https://firebase.google.com/docs/hosting/manage-cache?authuser=683989221).
+
+**Current project status:** `frontend/.firebaserc` targets `portfolio-slk2023` (Blaze). `frontend/firebase.json` rewrites `/api/**` to `saver-backend` in `southamerica-east1`; that service still needs to be deployed and configured with PostgreSQL, storage, and email before the app is operational.
 
 ## Local setup
 
@@ -49,6 +51,10 @@ Enable Cloud SQL Admin API; create PostgreSQL in the same region as Cloud Run; c
 
 ## Release, rollback, and next steps
 
+### Pending: enable Google Sign-In
+
+Google Sign-In is deliberately disabled during this first rollout. After backend, Firebase Hosting, PostgreSQL, storage, and email have been verified, create/configure a Web OAuth client ID, add `https://saver-app-demo.web.app` as an authorized origin, and deploy a revision with `GOOGLE_CLIENT_ID`. Do not store a client secret: this backend validates the Google-issued ID token.
+
 Deploy API first, run smoke tests, then publish frontend. Version images by commit SHA; retain the previous Cloud Run revision and Hosting build. Roll back Cloud Run traffic to the prior revision and redeploy the previous Hosting artifact if needed. Keep migrations additive and backward compatible; do not rely on destructive database rollback.
 
-For CI/CD, validate frontend/backend on each pull request and deploy from `main` with Workload Identity Federation instead of long-lived JSON keys. Alert on health, 5xx errors, latency, and database connectivity; test restore procedures. Receipt storage already sits behind the `StorageService` interface with an S3 adapter: in production set `STORAGE_PROVIDER=s3-compatible` with the chosen provider's HTTPS endpoint (Supabase Storage, R2 or GCS with HMAC keys) or `STORAGE_PROVIDER=s3` for AWS, plus `STORAGE_ENVIRONMENT=production` and keys in Secret Manager. Native GCS needs its own adapter. Never expose keys to the frontend; downloads use short-lived signed URLs.
+For CI/CD, validate frontend/backend on each pull request and deploy from `main` with Workload Identity Federation instead of long-lived JSON keys. Alert on health, 5xx errors, latency, and database connectivity; test restore procedures. Supabase Storage is the demo choice alongside Supabase PostgreSQL. The backend already has an S3-compatible adapter, so configure Supabase's S3 endpoint and region and keep its keys in Secret Manager. Create the bucket manually and keep it private. For an AWS migration, the backend already has an S3 adapter; native GCS needs its own adapter. Never expose keys to the frontend; downloads use short-lived signed URLs.

@@ -52,6 +52,7 @@ Con `docker compose up -d` levantado, también corren los tests de integración 
 src/main/java/com/saver/
 ├── auth/       # Registro, login, Google, refresh y logout
 ├── user/       # Perfil del usuario (/api/me), UserTime (mes actual según zona horaria)
+├── notification/ # Preferencias de avisos por tipo y canal
 ├── category/   # Categorías de sistema y propias (borrado lógico)
 ├── income/     # Ingresos fijos y extras con montos versionados
 ├── expense/    # Plantillas de gasto, ocurrencias mensuales, ExpenseSchedule (cálculos)
@@ -59,6 +60,10 @@ src/main/java/com/saver/
 ├── history/    # Historial mensual y comparación entre meses
 ├── projection/ # Proyección a N meses (nominal y en valores de hoy)
 ├── inflation/  # Inflación oficial ARS/USD (descarga diaria), estimada y manual
+├── exchange/   # Cotizaciones del dólar (dolarapi) y conversiones según el uso
+├── account/    # Cuentas, saldos, transferencias, ajustes y patrimonio
+├── card/       # Tarjetas (agrupan gastos)
+├── payment/    # Pagos de ocurrencias y comprobantes
 ├── timeline/   # Serie pasado + futuro del inicio
 ├── mail/       # Puerto MailSender + adaptadores (log, Mailpit, Brevo)
 ├── security/   # Spring Security, JWT, @CurrentUser
@@ -87,7 +92,7 @@ src/main/resources/
 
 1. ✅ Base: autenticación, perfil, i18n de errores, entorno local
 2. ✅ Ingresos, categorías, gastos (único, cuotas, fijos, variables) y balance mensual
-3. Pagos parciales con comprobantes, vencimientos, cierre automático de mes, cotización USD
+3. ✅ (3A) Cuentas, tarjetas, cotizaciones del dólar, pagos parciales con comprobantes y cobros · (3B) cierre automático de mes versionado, ahorro real, recordatorios por email
 4. ✅ Historial, comparaciones entre meses y proyecciones · ✅ recuperación de contraseña por email · ✅ inflación oficial por moneda y línea de tiempo del inicio
 5. Simulador de inversiones con escenarios guardados
 6. Informes PDF y exportación Excel/CSV · despliegue en GCP

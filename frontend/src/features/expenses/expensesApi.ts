@@ -25,6 +25,7 @@ export type Expense = {
   totalAmount: number | null;
   amounts: AmountVersion[];
   notes: string | null;
+  cardId?: string;
 };
 
 export type ExpenseInput = {
@@ -41,6 +42,9 @@ export type ExpenseInput = {
   adjustPercent?: string | null;
   adjustWithInflation: boolean;
   notes?: string | null;
+  cardId?: string | null;
+  /** Obligatorio si empieza antes del mes actual. */
+  pastMonthsPaid?: boolean | null;
 };
 
 export type ExpenseUpdate = {
@@ -56,6 +60,8 @@ export type ExpenseUpdate = {
   endMonth?: MonthKey;
   clearEnd?: boolean;
   notes?: string;
+  cardId?: string;
+  clearCard?: boolean;
 };
 
 export type OccurrenceStatus = 'PENDING' | 'PARTIAL' | 'PAID' | 'OVERDUE';
@@ -78,6 +84,7 @@ export type Occurrence = {
   variableAmount: boolean;
   projected: boolean;
   notes: string | null;
+  cardId?: string;
 };
 
 export const expensesApi = {

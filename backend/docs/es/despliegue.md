@@ -8,7 +8,7 @@ Arquitectura objetivo en GCP:
 |---|---|
 | API | **Cloud Run** (contenedor de este repo) |
 | Base de datos | **Supabase** PostgreSQL (o Cloud SQL) |
-| Comprobantes | Servicio con API S3 a definir (Supabase Storage, R2, GCS interoperable o AWS S3) — ver [Configuración](configuracion.md#almacenamiento-de-comprobantes) |
+| Comprobantes | **Supabase Storage** durante el demo, mediante la API S3 — ver [Configuración](configuracion.md#almacenamiento-de-comprobantes) |
 | Secretos | **Secret Manager** |
 | Imágenes | **Artifact Registry** |
 | Frontend | Firebase Hosting, con rewrite de `/api/**` a este servicio (ver `frontend/`) |
@@ -25,7 +25,7 @@ El `Dockerfile` compila con Maven y ejecuta en `eclipse-temurin:21-jre-alpine` c
 ## Cloud Run (primera vez)
 
 ```bash
-PROJECT=mi-proyecto
+PROJECT=portfolio-slk2023
 REGION=southamerica-east1          # São Paulo, la más cercana a Argentina
 REPO=saver
 
@@ -43,9 +43,9 @@ gcloud run deploy saver-backend \
   --image $REGION-docker.pkg.dev/$PROJECT/$REPO/backend:latest \
   --region $REGION --allow-unauthenticated \
   --memory 512Mi --min-instances 0 --max-instances 2 \
-  --set-env-vars DB_HOST=db.xxxx.supabase.co,DB_PORT=5432,DB_NAME=postgres,DB_USER=postgres \
-  --set-env-vars COOKIE_SECURE=true,APP_ALLOWED_ORIGINS=https://saver.web.app,GOOGLE_CLIENT_ID=xxxx.apps.googleusercontent.com \
-  --set-env-vars STORAGE_ENVIRONMENT=production,STORAGE_PROVIDER=s3-compatible,STORAGE_ENDPOINT=https://<endpoint-s3>,STORAGE_BUCKET=saver-receipts,STORAGE_REGION=<region> \
+  --set-env-vars DB_HOST=<host-pooler-de-sesion>,DB_PORT=5432,DB_NAME=postgres,DB_USER=<usuario-copiado-de-supabase>,DB_SSLMODE=require,SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=5 \
+  --set-env-vars COOKIE_SECURE=true,APP_ALLOWED_ORIGINS=https://<dominio-hosting>,APP_WEB_URL=https://<dominio-hosting>,GOOGLE_CLIENT_ID=xxxx.apps.googleusercontent.com \
+  --set-env-vars STORAGE_ENVIRONMENT=production,STORAGE_PROVIDER=s3-compatible,STORAGE_ENDPOINT=<endpoint-s3-copiado-de-supabase>,STORAGE_BUCKET=saver-receipts,STORAGE_REGION=<region-copiada-de-supabase> \
   --set-secrets JWT_SECRET=saver-jwt-secret:latest,DB_PASSWORD=saver-db-password:latest,STORAGE_ACCESS_KEY=saver-storage-key:latest,STORAGE_SECRET_KEY=saver-storage-secret:latest
 ```
 
@@ -55,6 +55,15 @@ gcloud run deploy saver-backend \
 
 - Usar la cadena de conexión **directa** (puerto 5432) o el *session pooler*. El *transaction pooler* (6543) no es compatible con los prepared statements de JDBC sin configuración extra.
 - Flyway aplica las migraciones al arrancar el contenedor.
+
+## Supabase Storage
+
+1. En Supabase, abrir **Storage** y crear manualmente el bucket privado `saver-receipts`. En producción, Saver no crea buckets automáticamente.
+2. En **Storage → Configuration → S3**, habilitar el protocolo S3, generar un par de claves y copiar el endpoint y la región que muestra Supabase. No inventar la región ni publicar las claves.
+3. Guardar el Access Key ID como `saver-storage-key` y el Secret Access Key como `saver-storage-secret` en Secret Manager; conceder a la cuenta de servicio de Cloud Run acceso a ambos secretos.
+4. Configurar `STORAGE_PROVIDER=s3-compatible`, `STORAGE_ENVIRONMENT=production`, `STORAGE_ENDPOINT` con el endpoint S3 copiado, `STORAGE_BUCKET=saver-receipts` y `STORAGE_REGION` con la región copiada. Las claves se inyectan como `STORAGE_ACCESS_KEY` y `STORAGE_SECRET_KEY`.
+
+El bucket debe permanecer privado. Saver valida el acceso al archivo en el backend y entrega enlaces de descarga firmados con vencimiento. La API S3 de Supabase es compatible con el cliente que ya usa Saver; no hace falta agregar el SDK de Supabase al frontend. Las claves S3 son de servidor y pueden saltarse las políticas RLS: nunca ponerlas en el navegador ni en `VITE_*`.
 
 ## Tareas programadas con varias instancias
 

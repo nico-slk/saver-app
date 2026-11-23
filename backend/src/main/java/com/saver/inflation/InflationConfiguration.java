@@ -1,5 +1,6 @@
 package com.saver.inflation;
 
+import com.saver.common.HttpJsonClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.http.HttpClient;
 import java.time.Clock;

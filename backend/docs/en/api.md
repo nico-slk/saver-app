@@ -24,6 +24,8 @@ The full interactive reference is in **Swagger UI**: `http://localhost:8080/swag
 | POST | `/api/auth/logout` | cookie | Ends the current session (204) |
 | GET | `/api/me` | Bearer | User profile |
 | PATCH | `/api/me` | Bearer | Updates `displayName`, `locale` (`es`/`en`), `baseCurrency` (`ARS`/`USD`), `timezone` |
+| GET | `/api/notifications/preferences` | Bearer | Preferences for upcoming, due-today, and overdue alerts |
+| PUT | `/api/notifications/preferences` | Bearer | Saves enabled alert types and preferred channels (`emailEnabled`, `pushEnabled`); delivery is pending |
 | GET | `/actuator/health` | — | Service health |
 
 Authentication response:
@@ -91,6 +93,33 @@ Occurrence status in responses: `PENDING`, `PARTIAL`, `PAID` or `OVERDUE` (compu
 Income (`POST`/`PATCH /api/incomes`) accepts `adjustEveryMonths`, `adjustPercent`, `adjustWithInflation` (and `clearAdjustment` on `PATCH`); the response includes `nextAdjustmentMonth`.
 
 
+## Endpoints (accounts, cards, rates, payments and receipts)
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| GET | `/api/accounts` | Bearer | Accounts with balance, totals per currency and net worth (`netWorth`, `netWorthSavings`, MEP valuation) |
+| POST | `/api/accounts` | Bearer | Body: `name`, `kind` (`CHECKING`/`CASH`/`WALLET`/`SAVINGS`/`INVESTMENT`), `currency`, `openingBalance?`, `openingDate?`, `color?` |
+| PATCH | `/api/accounts/{id}` | Bearer | `name`, `kind`, `color`, `openingBalance`, `openingDate`, `archived` |
+| DELETE | `/api/accounts/{id}` | Bearer | Only without movements (otherwise archive) |
+| GET | `/api/accounts/{id}/movements?limit=` | Bearer | Payments, receipts, transfers and adjustments (newest first); `counted=false` if before the opening balance |
+| POST | `/api/accounts/{id}/adjustments` | Bearer | Body: `targetBalance` (real balance) or signed `amount`, `date?`, `notes?` |
+| DELETE | `/api/adjustments/{id}` | Bearer | Undo an adjustment |
+| POST | `/api/transfers` | Bearer | Body: `fromAccountId`, `toAccountId`, `amount` (source currency), `toAmount?` (what arrived), `rate?`, `date?`, `notes?` |
+| DELETE | `/api/transfers/{id}` | Bearer | Undo a transfer |
+| GET/POST | `/api/cards` | Bearer | Cards (body: `name`, `color?`). `PATCH /api/cards/{id}`: `name`, `color`, `archived`. `DELETE` archives |
+| GET | `/api/exchange-rates` | Bearer | Latest rate of each type (`buy`, `sell`, `day`) |
+| GET | `/api/exchange-rates/convert?amount=&from=&to=&purpose=&rate=` | Bearer | Conversion preview (`purpose`: `PAYMENT`, `PAYMENT_CARD`, `RECEIPT`, `TRANSFER`, `VALUATION`) |
+| GET | `/api/occurrences/{id}/payments` | Bearer | An occurrence's payments with receipts, state, paid and remaining |
+| POST | `/api/occurrences/{id}/payments` | Bearer | Body: `accountId`, `amount` (expense currency), `date?`, `rate?`, `notes?`. Returns the updated occurrence |
+| DELETE | `/api/payments/{id}` | Bearer | Deletes the payment and its receipts |
+| POST | `/api/payments/{id}/attachments` | Bearer | `multipart/form-data`, field `files` (up to 10) |
+| GET / DELETE | `/api/attachments/{id}` | Bearer | Download (inline, with the original name) or delete a receipt |
+| GET | `/api/incomes/{id}/receipts?month=` | Bearer | An income's receipts in a month |
+| POST | `/api/incomes/{id}/receipts` | Bearer | Body: `month`, `accountId`, `amount` (income currency), `date?`, `rate?`, `notes?` |
+| DELETE | `/api/incomes/receipts/{id}` | Bearer | Deletes a receipt |
+
+`POST /api/expenses` accepts `cardId` and `pastMonthsPaid` (required when starting before the current month); `PATCH` accepts `cardId` / `clearCard`. Occurrences and expenses return `cardId`; `/api/months` returns `received` per income.
+
 ## Errors
 
 [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) format (`application/problem+json`) with a `code` property:
@@ -131,6 +160,15 @@ Income (`POST`/`PATCH /api/incomes`) accepts `adjustEveryMonths`, `adjustPercent
 | `inflation.invalid_currency` | 400 | Currency other than ARS/USD |
 | `timeline.invalid_months` / `timeline.invalid_from` | 400 | Count outside 1–120 or start month more than 120 months away |
 | `income.adjust_only_recurring` | 400 | Increase rule on a one-month income |
+| `expense.past_months_choice_required` | 400 | Expense starting in the past without saying whether those months are paid (`fields.pastMonthsPaid`) |
+| `account.not_found` / `account.archived` / `account.has_movements` | 404/400/409 | Missing, archived account or one with movements (can't be deleted) |
+| `account.adjustment_zero` / `account.adjustment_required` | 400 | Adjustment with no difference or no balance |
+| `transfer.same_account` | 400 | Same source and destination |
+| `card.not_found` | 400/404 | Missing or archived card |
+| `exchange.rate_required` / `exchange.invalid_rate` | 400 | No stored rate (enter it manually) or invalid |
+| `payment.not_found` / `receipt.not_found` / `receipt.month_inactive` | 404/400 | Missing payment or receipt; income not active that month |
+| `attachment.invalid_type` / `too_large` / `too_many` / `required` | 400 | Receipt type not allowed, over 10 MB, more than 10 or no files |
+| `income.has_receipts` | 409 | Income with receipts: end it or delete the receipts |
 | `server.error` | 500 | Unexpected error (logged) |
 
 The frontend translates each `code` using the key `errors.<code>`. **When adding a new code, add it to the frontend language files too.**

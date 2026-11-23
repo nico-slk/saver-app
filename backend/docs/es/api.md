@@ -24,6 +24,8 @@ La referencia completa e interactiva está en **Swagger UI**: `http://localhost:
 | POST | `/api/auth/logout` | cookie | Cierra la sesión actual (204) |
 | GET | `/api/me` | Bearer | Perfil del usuario |
 | PATCH | `/api/me` | Bearer | Actualiza `displayName`, `locale` (`es`/`en`), `baseCurrency` (`ARS`/`USD`), `timezone` |
+| GET | `/api/notifications/preferences` | Bearer | Preferencias para avisos próximos, del día y vencidos |
+| PUT | `/api/notifications/preferences` | Bearer | Guarda tipos habilitados y canales preferidos (`emailEnabled`, `pushEnabled`); la entrega está pendiente |
 | GET | `/actuator/health` | — | Estado del servicio |
 
 Respuesta de autenticación:
@@ -91,6 +93,33 @@ Estado de una ocurrencia en la respuesta: `PENDING`, `PARTIAL`, `PAID` u `OVERDU
 Ingresos (`POST`/`PATCH /api/incomes`) aceptan `adjustEveryMonths`, `adjustPercent`, `adjustWithInflation` (y `clearAdjustment` en `PATCH`); la respuesta incluye `nextAdjustmentMonth`.
 
 
+## Endpoints (cuentas, tarjetas, cotizaciones, pagos y cobros)
+
+| Método | Ruta | Auth | Descripción |
+|---|---|---|---|
+| GET | `/api/accounts` | Bearer | Cuentas con saldo, totales por moneda y patrimonio (`netWorth`, `netWorthSavings`, valuación MEP) |
+| POST | `/api/accounts` | Bearer | Body: `name`, `kind` (`CHECKING`/`CASH`/`WALLET`/`SAVINGS`/`INVESTMENT`), `currency`, `openingBalance?`, `openingDate?`, `color?` |
+| PATCH | `/api/accounts/{id}` | Bearer | `name`, `kind`, `color`, `openingBalance`, `openingDate`, `archived` |
+| DELETE | `/api/accounts/{id}` | Bearer | Solo sin movimientos (si no, archivar) |
+| GET | `/api/accounts/{id}/movements?limit=` | Bearer | Pagos, cobros, transferencias y ajustes (más nuevos primero); `counted=false` si es anterior al saldo inicial |
+| POST | `/api/accounts/{id}/adjustments` | Bearer | Body: `targetBalance` (saldo real) o `amount` con signo, `date?`, `notes?` |
+| DELETE | `/api/adjustments/{id}` | Bearer | Deshace un ajuste |
+| POST | `/api/transfers` | Bearer | Body: `fromAccountId`, `toAccountId`, `amount` (moneda de origen), `toAmount?` (lo que llegó), `rate?`, `date?`, `notes?` |
+| DELETE | `/api/transfers/{id}` | Bearer | Deshace una transferencia |
+| GET/POST | `/api/cards` | Bearer | Tarjetas (body: `name`, `color?`). `PATCH /api/cards/{id}`: `name`, `color`, `archived`. `DELETE` archiva |
+| GET | `/api/exchange-rates` | Bearer | Última cotización de cada tipo (`buy`, `sell`, `day`) |
+| GET | `/api/exchange-rates/convert?amount=&from=&to=&purpose=&rate=` | Bearer | Vista previa de una conversión (`purpose`: `PAYMENT`, `PAYMENT_CARD`, `RECEIPT`, `TRANSFER`, `VALUATION`) |
+| GET | `/api/occurrences/{id}/payments` | Bearer | Pagos de una ocurrencia con comprobantes, estado, pagado y restante |
+| POST | `/api/occurrences/{id}/payments` | Bearer | Body: `accountId`, `amount` (moneda del gasto), `date?`, `rate?`, `notes?`. Devuelve la ocurrencia actualizada |
+| DELETE | `/api/payments/{id}` | Bearer | Borra el pago y sus comprobantes |
+| POST | `/api/payments/{id}/attachments` | Bearer | `multipart/form-data`, campo `files` (hasta 10) |
+| GET / DELETE | `/api/attachments/{id}` | Bearer | Descarga (inline, con el nombre original) o borra un comprobante |
+| GET | `/api/incomes/{id}/receipts?month=` | Bearer | Cobros de un ingreso en un mes |
+| POST | `/api/incomes/{id}/receipts` | Bearer | Body: `month`, `accountId`, `amount` (moneda del ingreso), `date?`, `rate?`, `notes?` |
+| DELETE | `/api/incomes/receipts/{id}` | Bearer | Borra un cobro |
+
+`POST /api/expenses` acepta `cardId` y `pastMonthsPaid` (obligatorio si empieza antes del mes actual); `PATCH` acepta `cardId` / `clearCard`. Las ocurrencias y gastos devuelven `cardId`; `/api/months` devuelve `received` por ingreso.
+
 ## Errores
 
 Formato [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) (`application/problem+json`) con la propiedad `code`:
@@ -131,6 +160,15 @@ Formato [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) (`application/problem
 | `inflation.invalid_currency` | 400 | Moneda distinta de ARS/USD |
 | `timeline.invalid_months` / `timeline.invalid_from` | 400 | Cantidad fuera de 1–120 o mes inicial a más de 120 meses |
 | `income.adjust_only_recurring` | 400 | Regla de aumentos en un ingreso de un solo mes |
+| `expense.past_months_choice_required` | 400 | Gasto que empieza en el pasado sin indicar si esos meses están pagos (`fields.pastMonthsPaid`) |
+| `account.not_found` / `account.archived` / `account.has_movements` | 404/400/409 | Cuenta inexistente, archivada o con movimientos (no se puede borrar) |
+| `account.adjustment_zero` / `account.adjustment_required` | 400 | Ajuste sin diferencia o sin saldo |
+| `transfer.same_account` | 400 | Origen y destino iguales |
+| `card.not_found` | 400/404 | Tarjeta inexistente o archivada |
+| `exchange.rate_required` / `exchange.invalid_rate` | 400 | No hay cotización guardada (cargarla a mano) o es inválida |
+| `payment.not_found` / `receipt.not_found` / `receipt.month_inactive` | 404/400 | Pago o cobro inexistente; ingreso que no corresponde a ese mes |
+| `attachment.invalid_type` / `too_large` / `too_many` / `required` | 400 | Comprobante no permitido, mayor a 10 MB, más de 10 o sin archivos |
+| `income.has_receipts` | 409 | Ingreso con cobros: darlo de baja o borrar los cobros |
 | `server.error` | 500 | Error inesperado (se registra en el log) |
 
 El frontend traduce cada `code` con la clave `errors.<code>`. **Al agregar un código nuevo, sumarlo también en los archivos de idioma del frontend.**

@@ -52,6 +52,7 @@ With `docker compose up -d` running, integration tests also run (`saver_test` da
 src/main/java/com/saver/
 ├── auth/       # Sign-up, login, Google, refresh and logout
 ├── user/       # User profile (/api/me), UserTime (current month per time zone)
+├── notification/ # Alert preferences by type and channel
 ├── category/   # System and own categories (soft delete)
 ├── income/     # Fixed and extra income with versioned amounts
 ├── expense/    # Expense templates, monthly occurrences, ExpenseSchedule (calculations)
@@ -59,6 +60,10 @@ src/main/java/com/saver/
 ├── history/    # Monthly history and month comparison
 ├── projection/ # N-month projection (nominal and in today's money)
 ├── inflation/  # Official ARS/USD inflation (daily download), estimate and manual rate
+├── exchange/   # Dollar rates (dolarapi) and per-use conversions
+├── account/    # Accounts, balances, transfers, adjustments and net worth
+├── card/       # Cards (group expenses)
+├── payment/    # Occurrence payments and receipts
 ├── timeline/   # Past + future series for Home
 ├── mail/       # MailSender port + adapters (log, Mailpit, Brevo)
 ├── security/   # Spring Security, JWT, @CurrentUser
@@ -87,7 +92,7 @@ src/main/resources/
 
 1. ✅ Foundation: authentication, profile, error i18n, local environment
 2. ✅ Income, categories, expenses (one-off, installments, fixed, variable) and monthly balance
-3. Partial payments with receipts, due dates, automatic month closing, USD exchange rate
+3. ✅ (3A) Accounts, cards, dollar rates, partial payments with receipts and income receipts · (3B) versioned automatic month closing, real savings, email reminders
 4. ✅ History, month comparisons and projections · ✅ password recovery by email · ✅ official inflation per currency and Home timeline
 5. Investment simulator with saved scenarios
 6. PDF reports and Excel/CSV export · GCP deployment
