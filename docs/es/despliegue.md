@@ -1,5 +1,8 @@
 # Estrategia de despliegue e integraciones
 
+> ⚠️ **Aviso Importante: Proyecto de Demostración**  
+> Saver es una aplicación de demostración de bajo presupuesto (*proof of concept* / MVP) creada con fines de portfolio y prueba técnica. No cuenta con acuerdos de nivel de servicio (SLA) de alta disponibilidad ni auditorías de seguridad bancaria. **Se recomienda expresamente NO ingresar información financiera real, contraseñas sensibles ni datos personales confidenciales.**
+
 Esta guía propone un camino reproducible para el estado actual de Saver. Los comandos usan sintaxis de PowerShell cuando corresponde. Reemplazar los valores entre `<...>`; no pegar claves reales en scripts, historial de consola o repositorios.
 
 ## 1. Decisiones de arquitectura
@@ -11,7 +14,8 @@ Esta guía propone un camino reproducible para el estado actual de Saver. Los co
 
 Se recomienda Firebase Hosting + Cloud Run con el rewrite ya presente en `frontend/firebase.json`: el navegador llama a `/api`, por lo que UI y API comparten origen. Así funciona `SameSite=Strict` y la cookie de refresh debe conservar el nombre `__session`; Firebase Hosting permite reenviar esa cookie a Cloud Run. [Firebase documenta esta restricción](https://firebase.google.com/docs/hosting/manage-cache?authuser=683989221).
 
-**Estado del proyecto actual:** `frontend/.firebaserc` apunta a `portfolio-slk2023` (Blaze). `frontend/firebase.json` ya reescribe `/api/**` hacia `saver-backend` en `southamerica-east1`; ese servicio todavía debe desplegarse y configurarse con PostgreSQL, storage y correo antes de que la app quede operativa.
+**Estado del proyecto actual:** `frontend/.firebaserc` apunta al proyecto **`saverapp-b82fd`**. `frontend/firebase.json` reescribe `/api/**` hacia el servicio Cloud Run **`saver-backend`** en **`southamerica-east1`**. La persistencia se aloja en Supabase (PostgreSQL y Storage S3) y los correos se envían a través de Brevo.
+
 
 ## 2. Preparar y verificar localmente
 
@@ -154,11 +158,27 @@ gcloud run deploy saver-backend `
 5. Observar métricas y logs. Mantener el tag y la revisión anterior para revertir.
 6. Reversión: devolver tráfico de Cloud Run a la revisión previa (`gcloud run services update-traffic ... --to-revisions <REVISION>=100`) y volver a desplegar el build anterior de Hosting. Las migraciones deben ser aditivas y compatibles hacia atrás; no revertir datos destructivamente como mecanismo rutinario.
 
-## 8. CI/CD, seguridad y siguiente etapa
+## 8. CI/CD y Estrategia de Ramas en GitHub Actions
+
+El repositorio cuenta con integración y despliegue continuo configurado para el monorepo mediante GitHub Actions:
+
+### Modelo de Ramas
+* **`main` (Producción):** Es la rama protegida en vivo. Cualquier push o merge directo dispara la compilación y despliegue automático del componente modificado hacia Google Cloud Run o Firebase Hosting.
+* **`develop` (Desarrollo):** Rama base de integración diaria. Todas las ramas de características (`feature/*`) y correcciones estándar (`fix/*`) parten de `develop` y se reintegran a ella.
+* **`hotfix/*`:** Ramas de corrección de emergencia que nacen directamente de `main`. Al completarse, se mergean a `main` (desplegando inmediatamente a producción) y luego se integran a `develop` para evitar regresiones.
+
+### Workflows Automatizados
+1. **`.github/workflows/deploy-backend.yml`:** Filtra cambios en `backend/**`. Compila la imagen con Cloud Build y genera una nueva revisión en Cloud Run inyectando las credenciales de Secret Manager.
+2. **`.github/workflows/deploy-frontend.yml`:** Filtra cambios en `frontend/**`. Compila la SPA con Vite y publica en Firebase Hosting.
+
+Ambos flujos utilizan la clave de servicio cargada en el secreto de repositorio **`GCP_SA_KEY`**.
+
+## 9. Seguridad y siguiente etapa
 
 ### Pendiente: habilitar Google Sign-In
 
-Google Sign-In queda deliberadamente deshabilitado durante esta primera puesta en marcha. Una vez verificados backend, Firebase Hosting, PostgreSQL, storage y correo, crear/configurar un Client ID OAuth web, agregar `https://saver-app-demo.web.app` como origen autorizado y desplegar una revisión con `GOOGLE_CLIENT_ID`. No guardar un client secret: este backend valida el ID token que entrega Google.
+Google Sign-In queda deliberadamente deshabilitado durante esta primera puesta en marcha. Una vez verificados backend, Firebase Hosting, PostgreSQL, storage y correo, crear/configurar un Client ID OAuth web, agregar `https://saverapp-b82fd.web.app` como origen autorizado y desplegar una revisión con `GOOGLE_CLIENT_ID`. No guardar un client secret: este backend valida el ID token que entrega Google.
+
 
 - En cada PR: `npm ci && npm test && npm run build`, `mvn verify`, análisis de dependencias y revisión de migraciones.
 - En `main`: construir una imagen con SHA, desplegar mediante Workload Identity Federation (sin claves JSON permanentes), ejecutar smoke tests y recién entonces publicar Hosting.

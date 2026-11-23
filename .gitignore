@@ -4,6 +4,10 @@
 .env
 .env.*
 !.env.example
+*.key.json
+*gcp-key*.json
+*.pem
+
 
 # Backend (Java / Maven)
 backend/target/

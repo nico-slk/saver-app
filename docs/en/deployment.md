@@ -1,5 +1,8 @@
 # Deployment and integration strategy
 
+> ⚠️ **Important Notice: Demonstration Project**  
+> Saver is a low-budget demonstration application (*proof of concept* / MVP) created for portfolio evaluation and technical assessment. It does not carry enterprise high-availability service level agreements (SLAs) or commercial banking security certifications. **It is strongly advised NOT to enter real financial information, sensitive personal credentials, or confidential data.**
+
 This is the reproducible operating path for the current Saver release. Replace `<...>` values and never put real credentials in source code, shell history, or images.
 
 ## Target architecture
@@ -11,7 +14,8 @@ This is the reproducible operating path for the current Saver release. Replace `
 
 Firebase Hosting rewrites `/api/**` to Cloud Run, keeping the app same-origin. Keep the refresh cookie named `__session`: Hosting forwards that special cookie to Cloud Run. [Firebase documentation](https://firebase.google.com/docs/hosting/manage-cache?authuser=683989221).
 
-**Current project status:** `frontend/.firebaserc` targets `portfolio-slk2023` (Blaze). `frontend/firebase.json` rewrites `/api/**` to `saver-backend` in `southamerica-east1`; that service still needs to be deployed and configured with PostgreSQL, storage, and email before the app is operational.
+**Current project status:** `frontend/.firebaserc` targets project **`saverapp-b82fd`**. `frontend/firebase.json` rewrites `/api/**` to Cloud Run service **`saver-backend`** in **`southamerica-east1`**. Persistent data is hosted on Supabase (PostgreSQL & S3 Storage), and transactional email is delivered via Brevo.
+
 
 ## Local setup
 
@@ -49,11 +53,27 @@ Enable Cloud SQL Admin API; create PostgreSQL in the same region as Cloud Run; c
 4. In `frontend`, run `npm ci`, `npm run build`, `firebase login`, `firebase use --add`, then `firebase deploy --only hosting`. Ensure `firebase.json` service and region exactly match Cloud Run and leave `VITE_API_URL` empty.
 5. Test the hosted app: `/api` calls, secure `__session` cookie, reload/session restore, and sign-out.
 
+## CI/CD and Branching Strategy in GitHub Actions
+
+The repository is configured as a monorepo with automated pipelines powered by GitHub Actions:
+
+### Branching Model
+* **`main` (Production):** Live production branch. Pushes or pull request merges directly trigger automated build and deployment pipelines for modified components to Google Cloud Run and Firebase Hosting.
+* **`develop` (Development):** Integration branch for everyday development. Feature branches (`feature/*`) and standard bug fixes (`fix/*`) branch off of and merge back into `develop`.
+* **`hotfix/*`:** Emergency production patches branched directly from `main`. Once resolved, they merge back into `main` (triggering an immediate release) and are back-merged into `develop` to prevent regressions.
+
+### Automated Workflows
+1. **`.github/workflows/deploy-backend.yml`:** Filters changes in `backend/**`. Builds the container image with Cloud Build and creates a new revision on Cloud Run injecting secrets from Secret Manager.
+2. **`.github/workflows/deploy-frontend.yml`:** Filters changes in `frontend/**`. Builds the SPA bundle with Vite and publishes to Firebase Hosting.
+
+Both workflows authenticate using the repository secret **`GCP_SA_KEY`**.
+
 ## Release, rollback, and next steps
 
 ### Pending: enable Google Sign-In
 
-Google Sign-In is deliberately disabled during this first rollout. After backend, Firebase Hosting, PostgreSQL, storage, and email have been verified, create/configure a Web OAuth client ID, add `https://saver-app-demo.web.app` as an authorized origin, and deploy a revision with `GOOGLE_CLIENT_ID`. Do not store a client secret: this backend validates the Google-issued ID token.
+Google Sign-In is deliberately disabled during this first rollout. After backend, Firebase Hosting, PostgreSQL, storage, and email have been verified, create/configure a Web OAuth client ID, add `https://saverapp-b82fd.web.app` as an authorized origin, and deploy a revision with `GOOGLE_CLIENT_ID`. Do not store a client secret: this backend validates the Google-issued ID token.
+
 
 Deploy API first, run smoke tests, then publish frontend. Version images by commit SHA; retain the previous Cloud Run revision and Hosting build. Roll back Cloud Run traffic to the prior revision and redeploy the previous Hosting artifact if needed. Keep migrations additive and backward compatible; do not rely on destructive database rollback.
 

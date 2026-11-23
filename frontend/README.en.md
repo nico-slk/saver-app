@@ -2,6 +2,10 @@
 
 [🇪🇸 Español](README.md) · 🇬🇧 English
 
+> ⚠️ **Important Notice: Demonstration Project**  
+> Saver is a low-budget demonstration application (*proof of concept* / MVP) designed for technical evaluation and portfolio showcase. It does not carry enterprise high-availability service level agreements (SLAs) or commercial banking security certifications. **It is strongly advised NOT to enter real financial information, sensitive credentials, or confidential personal data.**
+
+
 Responsive web app for **Saver**, to manage expenses, income and savings and to simulate investments.
 Part of the [Saver](../README.en.md) repository. The API is in [`../backend`](../backend/README.en.md), which also documents the [business rules](../backend/docs/en/domain.md).
 
